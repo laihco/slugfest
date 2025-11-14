@@ -2,8 +2,14 @@
 
 ## Devlog Entry
 
-11/13/25 - ReadMe created. Assigned team lead roles.
-11/14/25 - Set up Deno + Three.js project. Added basic 3D scene with cube and OrbitControls. Configured deno.json tasks for development and build. Verified project runs via `deno task dev`.
+11/13/25
+
+- ReadMe created. Assigned team lead roles.
+
+11/14/25
+
+- Set up Deno + Three.js project. Added basic 3D scene with cube and OrbitControls. Configured deno.json tasks for development and build. Verified project runs via `deno task dev`.
+- Added support for importing Blender models (.glb) using GLTFLoader so 3D assets can be displayed in the scene.
 
 ## Introducing the team
 
