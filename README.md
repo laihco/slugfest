@@ -1,6 +1,6 @@
 # SlugFest
 
-##Devlog Entry
+## Devlog Entry
 11/13/25 - ReadMe created. Assigned team lead roles.
 
 ## Introducing the team
