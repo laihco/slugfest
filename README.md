@@ -1,5 +1,8 @@
 # SlugFest
 
+##Devlog Entry
+11/13/25 - ReadMe created. Assigned team lead roles.
+
 ## Introducing the team
 Either organizing by person or by role, tell us who will do what on your team. Your team should span at least the following four roles:
 
