@@ -1,0 +1,54 @@
+{
+  "nodeModulesDir": "auto",
+
+  "compilerOptions": {
+    "lib": [
+      "deno.window",
+      "dom",
+      "dom.iterable"
+    ],
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true
+  },
+
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  },
+
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 80,
+    "indentWidth": 2,
+    "semiColons": true,
+    "singleQuote": false,
+    "proseWrap": "preserve"
+  },
+
+  "tasks": {
+    "dev": "deno run -A npm:vite@7",
+    "build": "deno run -A npm:vite@7 build",
+    "preview": "deno run -A npm:vite@7 preview",
+
+    "check": "deno check src/main.ts",
+    "lint": "deno lint",
+    "fmt": "deno fmt",
+    "fmt:check": "deno fmt --check",
+
+    "ci": "deno fmt --check && deno lint && deno check src/main.ts && deno task build"
+  },
+
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".git"
+  ],
+
+  "imports": {
+    "three": "npm:three@0.172.0",
+    "vite": "npm:vite@7"
+  }
+}
