@@ -1,76 +1,53 @@
 import * as THREE from "https://esm.sh/three@0.172.0";
-import { OrbitControls } from "https://esm.sh/three@0.172.0/examples/jsm/controls/OrbitControls.js";
-import { GLTFLoader } from "https://esm.sh/three@0.172.0/examples/jsm/loaders/GLTFLoader.js";
 
-// Scene
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x111111);
+import { Scene1_MainHub } from "./Scene1_MainHub.ts";
+import { Scene2_Watergun } from "./Scene2_Watergun.ts";
+import { Scene3_MilkToss } from "./Scene3_MilkToss.ts";
+import { GameScene } from "./SceneInterface.ts";
 
-// Camera
-const camera = new THREE.PerspectiveCamera(
-  60,
-  globalThis.innerWidth / globalThis.innerHeight,
-  0.1,
-  1000,
-);
-camera.position.set(3, 3, 5);
-
-// Renderer
+// -------------------------------------------
+// Renderer Setup
+// -------------------------------------------
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(globalThis.innerWidth, globalThis.innerHeight);
-globalThis.document.body.appendChild(renderer.domElement);
+renderer.setSize(innerWidth, innerHeight);
+document.body.appendChild(renderer.domElement);
 
-// Lights
-scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
-dirLight.position.set(5, 8, 4);
-scene.add(dirLight);
+// -------------------------------------------
+// Scene Instances
+// -------------------------------------------
+const scenes: Record<number, GameScene> = {
+  1: new Scene1_MainHub(renderer),
+  2: new Scene2_Watergun(renderer),
+  3: new Scene3_MilkToss(renderer),
+};
 
-// Controls
-const controls = new OrbitControls(camera, renderer.domElement);
+let currentScene: GameScene = scenes[1];
 
-// Load Blender model
-let model: THREE.Object3D; // Declare outside loader so animate() can access it
-const loader = new GLTFLoader();
-loader.load(
-  "./assets/models/TestModel.glb",
-  (gltf) => {
-    model = gltf.scene;
-    model.scale.set(1, 1, 1);
-    model.position.set(0, -3, 0);
-    scene.add(model);
-  },
-  (xhr) => {
-    console.log(`Model ${(xhr.loaded / xhr.total * 100).toFixed(1)}% loaded`);
-  },
-  (error) => {
-    console.error("Error loading model:", error);
+// -------------------------------------------
+// Handle Input (1, 2, 3)
+// -------------------------------------------
+addEventListener("keydown", (e) => {
+  if (["1", "2", "3"].includes(e.key)) {
+    currentScene = scenes[Number(e.key)];
+    console.log("Switched to scene", e.key);
   }
-);
+});
 
-// Animation loop
+// -------------------------------------------
+// Resize
+// -------------------------------------------
+addEventListener("resize", () => {
+  currentScene.camera.aspect = innerWidth / innerHeight;
+  currentScene.camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// -------------------------------------------
+// Animation Loop
+// -------------------------------------------
 function animate() {
-  globalThis.requestAnimationFrame(animate);
-
-  // Rotate the model if it's loaded
-  if (model) {
-    model.rotation.y += 0.01; // Rotate around Y axis
-    // Optional: rotate around X or Z
-    // model.rotation.x += 0.005;
-    // model.rotation.z += 0.005;
-  }
-
-  controls.update();
-  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+  currentScene.update();
 }
 
 animate();
-
-
-// Resize
-globalThis.addEventListener("resize", () => {
-  camera.aspect = globalThis.innerWidth / globalThis.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(globalThis.innerWidth, globalThis.innerHeight);
-});
-
