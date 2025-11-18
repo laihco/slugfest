@@ -37,7 +37,7 @@ export class Scene2_Watergun {
     this.scene.add(dir);
   }
 
-  update() {
+  update(_delta: number) {
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
   }

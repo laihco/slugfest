@@ -37,17 +37,28 @@ addEventListener("keydown", (e) => {
 // Resize
 // -------------------------------------------
 addEventListener("resize", () => {
-  currentScene.camera.aspect = innerWidth / innerHeight;
-  currentScene.camera.updateProjectionMatrix();
+  if (currentScene.camera instanceof THREE.PerspectiveCamera) {
+    currentScene.camera.aspect = innerWidth / innerHeight;
+    currentScene.camera.updateProjectionMatrix();
+  }
+
   renderer.setSize(innerWidth, innerHeight);
 });
 
+
 // -------------------------------------------
-// Animation Loop
+// Animation Loop (delta time)
 // -------------------------------------------
+let last = performance.now();
+
 function animate() {
   requestAnimationFrame(animate);
-  currentScene.update();
+
+  const now = performance.now();
+  const delta = (now - last) / 1000; // seconds
+  last = now;
+
+  currentScene.update(delta);
 }
 
 animate();

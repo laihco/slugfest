@@ -4,12 +4,30 @@
 
 11/13/25
 
+Ananya
+
 - ReadMe created. Assigned team lead roles.
 
 11/14/25
 
+Matthew
+
 - Set up Deno + Three.js project. Added basic 3D scene with cube and OrbitControls. Configured deno.json tasks for development and build. Verified project runs via `deno task dev`.
 - Added support for importing Blender models (.glb) using GLTFLoader so 3D assets can be displayed in the scene.
+
+11/18/25
+
+Matthew
+
+- Implemented a player system with gravity, floor collision, and keyboard movement (WASD).
+
+- Set up a locked, diagonal over-the-shoulder camera that follows the player smoothly.
+
+- Replaced the flat sky color with a shader-based gradient for a warm late-afternoon sky.
+
+- Configured floor as a box mesh with editable height to properly collide with the player model.
+
+- Loaded Blender player model (.glb) into scene
 
 ## Introducing the team
 
