@@ -1,5 +1,6 @@
-import * as THREE from "https://esm.sh/three@0.172.0";
-import { OrbitControls } from "https://esm.sh/three@0.172.0/examples/jsm/controls/OrbitControls.js";
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 export class Scene3_MilkToss {
   scene: THREE.Scene;
@@ -26,7 +27,7 @@ export class Scene3_MilkToss {
     // Cube
     const cube = new THREE.Mesh(
       new THREE.BoxGeometry(1, 2, 1),
-      new THREE.MeshStandardMaterial({ color: 0xffffff })
+      new THREE.MeshStandardMaterial({ color: 0xffffff }),
     );
     this.scene.add(cube);
 
@@ -35,6 +36,20 @@ export class Scene3_MilkToss {
     const dir = new THREE.DirectionalLight(0xffffff, 1);
     dir.position.set(5, 5, 5);
     this.scene.add(dir);
+  }
+
+  loadModel(path: string) {
+    const loader = new GLTFLoader();
+    loader.load(
+      path,
+      (gltf: GLTF) => {
+        const model = gltf.scene;
+        model.position.set(0, 0, 0);
+        this.scene.add(model);
+      },
+      undefined,
+      (err: ErrorEvent | Error) => console.error("GLB Load Error:", err),
+    );
   }
 
   update(_delta: number) {

@@ -1,5 +1,8 @@
 import * as THREE from "https://esm.sh/three@0.172.0";
-import { GLTFLoader } from "https://esm.sh/three@0.172.0/examples/jsm/loaders/GLTFLoader.js";
+import {
+  GLTF,
+  GLTFLoader,
+} from "https://esm.sh/three@0.172.0/examples/jsm/loaders/GLTFLoader.js";
 
 export class Scene1_MainHub {
   scene: THREE.Scene;
@@ -45,7 +48,7 @@ export class Scene1_MainHub {
       60,
       innerWidth / innerHeight,
       0.1,
-      1000
+      1000,
     );
 
     // Lights
@@ -55,8 +58,12 @@ export class Scene1_MainHub {
     this.scene.add(dir);
 
     // Floor
-    const floorGeometry = new THREE.BoxGeometry(this.floorWidth, this.floorHeight, this.floorDepth);
-    const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x2E8B57 });
+    const floorGeometry = new THREE.BoxGeometry(
+      this.floorWidth,
+      this.floorHeight,
+      this.floorDepth,
+    );
+    const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x2e8b57 });
     this.floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
     this.floorMesh.position.y = this.floorY + this.floorHeight / 2;
     this.floorMesh.receiveShadow = true;
@@ -87,12 +94,12 @@ export class Scene1_MainHub {
         varying vec3 vPosition;
         void main() {
           float h = normalize(vPosition).y * 0.5 + 0.5;
-          vec3 topColor = vec3(0.05, 0.15, 0.5); // deep blue
-          vec3 bottomColor = vec3(1.0, 0.7, 0.4); // warm orange near horizon
+          vec3 topColor = vec3(0.05, 0.15, 0.5); 
+          vec3 bottomColor = vec3(1.0, 0.7, 0.4); 
           gl_FragColor = vec4(mix(bottomColor, topColor, h), 1.0);
         }
       `,
-      side: THREE.BackSide
+      side: THREE.BackSide,
     });
     const skyMesh = new THREE.Mesh(skyGeo, skyMat);
     this.scene.add(skyMesh);
@@ -103,23 +110,22 @@ export class Scene1_MainHub {
     const loader = new GLTFLoader();
     loader.load(
       path,
-      (gltf) => {
+      (gltf: GLTF) => {
         const model = gltf.scene;
         model.position.set(0, 0, 0);
         model.scale.set(this.playerScale, this.playerScale, this.playerScale);
         this.player.add(model);
       },
       undefined,
-      (err) => console.error("GLB Load Error:", err)
     );
   }
 
   // -------------------------
   setupControls() {
-    globalThis.addEventListener("keydown", (e) => {
+    globalThis.addEventListener("keydown", (e: KeyboardEvent) => {
       this.keys[e.key.toLowerCase()] = true;
     });
-    globalThis.addEventListener("keyup", (e) => {
+    globalThis.addEventListener("keyup", (e: KeyboardEvent) => {
       this.keys[e.key.toLowerCase()] = false;
     });
   }
@@ -129,10 +135,18 @@ export class Scene1_MainHub {
     const forward = new THREE.Vector3(0, 0, -1);
     const right = new THREE.Vector3(1, 0, 0);
 
-    if (this.keys["w"]) this.player.position.addScaledVector(forward, this.speed * delta);
-    if (this.keys["s"]) this.player.position.addScaledVector(forward, -this.speed * delta);
-    if (this.keys["a"]) this.player.position.addScaledVector(right, -this.speed * delta);
-    if (this.keys["d"]) this.player.position.addScaledVector(right, this.speed * delta);
+    if (this.keys["w"]) {
+      this.player.position.addScaledVector(forward, this.speed * delta);
+    }
+    if (this.keys["s"]) {
+      this.player.position.addScaledVector(forward, -this.speed * delta);
+    }
+    if (this.keys["a"]) {
+      this.player.position.addScaledVector(right, -this.speed * delta);
+    }
+    if (this.keys["d"]) {
+      this.player.position.addScaledVector(right, this.speed * delta);
+    }
 
     // Gravity
     this.velocityY += this.gravity * delta;
@@ -151,7 +165,6 @@ export class Scene1_MainHub {
   update(delta: number) {
     this.updateMovement(delta);
 
-    // Diagonal over-the-shoulder camera
     const desiredPos = this.player.position.clone().add(this.cameraOffset);
     this.camera.position.lerp(desiredPos, this.cameraLerpSpeed);
     this.camera.lookAt(this.player.position);
