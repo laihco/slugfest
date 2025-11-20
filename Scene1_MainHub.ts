@@ -1,8 +1,5 @@
-import * as THREE from "https://esm.sh/three@0.172.0";
-import {
-  GLTF,
-  GLTFLoader,
-} from "https://esm.sh/three@0.172.0/examples/jsm/loaders/GLTFLoader.js";
+import * as THREE from "three";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 import * as MAIN from "./main.ts";
 
@@ -11,7 +8,6 @@ export class Scene1_MainHub {
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
 
-  // Player system
   player: THREE.Object3D;
   playerScale = 0.25;
   playerHeight = 3;
@@ -21,18 +17,15 @@ export class Scene1_MainHub {
   speed = 4;
   keys: Record<string, boolean> = {};
 
-  // Gravity
   velocityY = 0;
   gravity = -15;
 
-  // Floor
   floorWidth = 50;
   floorDepth = 50;
   floorHeight = 1;
   floorY = 0;
   floorMesh: THREE.Mesh;
 
-  // Camera offset (diagonal over shoulder)
   cameraOffset = new THREE.Vector3(4, 6, 8);
   cameraLerpSpeed = 0.1;
 
@@ -47,10 +40,10 @@ export class Scene1_MainHub {
     // Scene
     this.scene = new THREE.Scene();
 
-    // Add afternoon sky gradient
+    // Sky gradient
     this.addSkyGradient();
 
-    // Camera
+    // Unique camera for this scene
     this.camera = new THREE.PerspectiveCamera(
       60,
       innerWidth / innerHeight,
@@ -97,7 +90,6 @@ export class Scene1_MainHub {
     this.scene.add(this.cube3Mesh);
   }
 
-  // -------------------------
   addSkyGradient() {
     const skyGeo = new THREE.SphereGeometry(500, 32, 15);
     const skyMat = new THREE.ShaderMaterial({
@@ -123,7 +115,6 @@ export class Scene1_MainHub {
     this.scene.add(skyMesh);
   }
 
-  // -------------------------
   loadGLBModel(path: string) {
     const loader = new GLTFLoader();
     loader.load(
@@ -138,7 +129,6 @@ export class Scene1_MainHub {
     );
   }
 
-  // -------------------------
   setupControls() {
     globalThis.addEventListener("keydown", (e: KeyboardEvent) => {
       this.keys[e.key.toLowerCase()] = true;
@@ -148,7 +138,6 @@ export class Scene1_MainHub {
     });
   }
 
-  // -------------------------
   updateMovement(delta: number) {
     const forward = new THREE.Vector3(0, 0, -1);
     const right = new THREE.Vector3(1, 0, 0);
@@ -166,11 +155,9 @@ export class Scene1_MainHub {
       this.player.position.addScaledVector(right, this.speed * delta);
     }
 
-    // Gravity
     this.velocityY += this.gravity * delta;
     this.player.position.y += this.velocityY * delta;
 
-    // Floor collision
     const floorTopY = this.floorY + this.floorHeight;
     const playerFeetY = this.player.position.y - this.playerHeight / 2;
     if (playerFeetY < floorTopY) {
