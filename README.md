@@ -29,6 +29,14 @@ Matthew
 
 - Loaded Blender player model (.glb) into scene
 
+11/19/25
+
+Melissa
+
+- Set up a square cube as a box mesh with editable size, and height
+
+- Box can collide with the player like a pressure plate to call scene transition
+
 ## Introducing the team
 
 Either organizing by person or by role, tell us who will do what on your team. Your team should span at least the following four roles:
