@@ -24,6 +24,18 @@ const scenes: Record<number, GameScene> = {
 let currentScene: GameScene = scenes[1];
 
 // -------------------------------------------
+// Scene Manager API
+// -------------------------------------------
+export function switchScene(id: number) {
+  if (scenes[id]) {
+    currentScene = scenes[id];
+    console.log("Switched to scene", id);
+  } else {
+    console.warn("Scene", id, "does not exist");
+  }
+}
+
+// -------------------------------------------
 // Handle Input (1, 2, 3)
 // -------------------------------------------
 addEventListener("keydown", (e) => {
@@ -44,7 +56,6 @@ addEventListener("resize", () => {
 
   renderer.setSize(innerWidth, innerHeight);
 });
-
 
 // -------------------------------------------
 // Animation Loop (delta time)

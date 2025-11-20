@@ -4,6 +4,8 @@ import {
   GLTFLoader,
 } from "https://esm.sh/three@0.172.0/examples/jsm/loaders/GLTFLoader.js";
 
+import * as MAIN from "./main.ts";
+
 export class Scene1_MainHub {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
@@ -33,6 +35,11 @@ export class Scene1_MainHub {
   // Camera offset (diagonal over shoulder)
   cameraOffset = new THREE.Vector3(4, 6, 8);
   cameraLerpSpeed = 0.1;
+
+  //Scene Transition Cubes
+  scene3CubePosition = new THREE.Vector3(-10, 0.1, -10);
+  cubeSize = 2;
+  cube3Mesh: THREE.Mesh;
 
   constructor(renderer: THREE.WebGLRenderer) {
     this.renderer = renderer;
@@ -77,6 +84,17 @@ export class Scene1_MainHub {
 
     this.loadGLBModel("/assets/models/Player.glb");
     this.setupControls();
+
+    //Scene Cubes
+    const cubeGeometry = new THREE.BoxGeometry(
+      this.cubeSize,
+      this.cubeSize,
+      this.cubeSize,
+    );
+    const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xFF0000 });
+    this.cube3Mesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    this.cube3Mesh.position.copy(this.scene3CubePosition);
+    this.scene.add(this.cube3Mesh);
   }
 
   // -------------------------
@@ -161,9 +179,24 @@ export class Scene1_MainHub {
     }
   }
 
+  // --------------------------
+  // Transition Collisions
+  //---------------------------
+  detectTransitionCollisions() {
+    if (
+      Math.abs(this.player.position.x - this.cube3Mesh.position.x) <
+        this.cubeSize / 2 &&
+      Math.abs(this.player.position.z - this.cube3Mesh.position.z) <
+        this.cubeSize / 2
+    ) {
+      MAIN.switchScene(3);
+    }
+  }
+
   // -------------------------
   update(delta: number) {
     this.updateMovement(delta);
+    this.detectTransitionCollisions();
 
     const desiredPos = this.player.position.clone().add(this.cameraOffset);
     this.camera.position.lerp(desiredPos, this.cameraLerpSpeed);
