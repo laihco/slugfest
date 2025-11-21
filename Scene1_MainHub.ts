@@ -223,4 +223,12 @@ export class Scene1_MainHub {
 
     this.renderer.render(this.scene, this.camera);
   }
+
+  //Reset Player spawn
+  resetPlayerPosition() {
+    // Spawn near the center of the floor.
+    this.player.position.set(0, 3, 0);
+    this.velocityY = 0;
+  }
+  
 }

@@ -10,31 +10,21 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Scene instances
+// Scenes
 const scenes: Record<number, GameScene> = {
   1: new Scene1_MainHub(renderer),
   2: new Scene2_Watergun(renderer),
-  3: new Scene3_MilkToss(renderer),
+  3: new Scene3_MilkToss(renderer, () => {
+    // called when can-toss is won
+    const hub = scenes[1] as Scene1_MainHub;
+    hub.resetPlayerPosition();
+    switchScene(1);
+  }),
 };
 
 let currentScene: GameScene = scenes[1];
 
-// -------------------------------------------
-// Scene Manager API
-// -------------------------------------------
-export function switchScene(id: number) {
-  if (scenes[id]) {
-    currentScene = scenes[id];
-    console.log("Switched to scene", id);
-  } else {
-    console.warn("Scene", id, "does not exist");
-  }
-}
-
-// -------------------------------------------
-// Handle Input (1, 2, 3)
-// -------------------------------------------
-// Type guard for scenes with UI
+// Type guard for UI
 function hasUI(
   scene: unknown,
 ): scene is { showUI?: () => void; hideUI?: () => void } {
@@ -42,23 +32,32 @@ function hasUI(
     ("showUI" in scene || "hideUI" in scene);
 }
 
-// Ensure all scenes hide their UI at start
-Object.values(scenes).forEach((scene) => {
-  if (hasUI(scene) && scene.hideUI) scene.hideUI();
-});
+export function switchScene(id: number) {
+  const next = scenes[id];
+  if (!next) {
+    console.warn("Scene", id, "does not exist");
+    return;
+  }
 
-// Switch scenes
+  // hide UI for old scene
+  if (hasUI(currentScene) && currentScene.hideUI) {
+    currentScene.hideUI();
+  }
+
+  currentScene = next;
+
+  // show UI for new scene (Scene3_MilkToss has showUI)
+  if (hasUI(currentScene) && currentScene.showUI) {
+    currentScene.showUI();
+  }
+
+  console.log("Switched to scene", id);
+}
+
+// Keyboard switching
 addEventListener("keydown", (e) => {
   if (["1", "2", "3"].includes(e.key)) {
-    // Hide previous scene's UI
-    if (hasUI(currentScene) && currentScene.hideUI) currentScene.hideUI();
-
-    currentScene = scenes[Number(e.key)];
-
-    // Show UI only if this scene has it
-    if (hasUI(currentScene) && currentScene.showUI) currentScene.showUI();
-
-    console.log("Switched to scene", e.key);
+    switchScene(Number(e.key));
   }
 });
 
@@ -68,6 +67,7 @@ addEventListener("resize", () => {
     currentScene.camera.aspect = innerWidth / innerHeight;
     currentScene.camera.updateProjectionMatrix();
   }
+
   renderer.setSize(innerWidth, innerHeight);
 });
 
@@ -82,5 +82,4 @@ function animate() {
 
   currentScene.update(delta);
 }
-
 animate();
