@@ -24,6 +24,13 @@ const scenes: Record<number, GameScene> = {
 
 let currentScene: GameScene = scenes[1];
 
+// Make sure all scenes start with their UI hidden
+Object.values(scenes).forEach((scene) => {
+  if (hasUI(scene) && scene.hideUI) {
+    scene.hideUI();
+  }
+});
+
 // Type guard for UI
 function hasUI(
   scene: unknown,

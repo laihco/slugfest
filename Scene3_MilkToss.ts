@@ -24,13 +24,21 @@ export class Scene3_MilkToss {
   meterFillElement: HTMLDivElement | null = null;
   meterValue = 0;
 
+  // Balls-left UI
+  ballsLeftElement: HTMLDivElement | null = null;
+
   // Throwing
   charging = false;
   balls: THREE.Mesh[] = [];
   bottles: THREE.Object3D[] = [];
 
-  // Win condition
+  // Attempts
+  private maxBalls = 4;
+  private ballsThrown = 0;
+
+  // Game state
   private hasWon = false;
+  private gameOver = false;
   private onWin?: () => void;
 
   // Prize fox model
@@ -90,14 +98,14 @@ export class Scene3_MilkToss {
 
     // Load prize fox model (hidden until win)
     this.loadModel("/assets/models/fox_toy.glb", (model) => {
-      model.visible = false;        // hide until win
-      model.scale.setScalar(0.6);   // adjust for size
+      model.visible = false;
+      model.scale.setScalar(0.6);
       this.prizeFox = model;
       this.scene.add(model);
     });
 
     // UI
-    this.showUI();
+    //this.showUI();
 
     // Mouse events
     this.renderer.domElement.addEventListener(
@@ -110,9 +118,11 @@ export class Scene3_MilkToss {
     );
   }
 
-  //Win conditions
+  // ------------- WIN / LOSE ---------------
+
   private handleWin() {
-    if (this.hasWon) return;
+    if (this.gameOver) return;
+    this.gameOver = true;
     this.hasWon = true;
     console.log("[MilkToss] WIN triggered");
 
@@ -124,47 +134,25 @@ export class Scene3_MilkToss {
       const dir = new THREE.Vector3();
       this.camera.getWorldDirection(dir);
 
-      // 1.5 units in front of camera
       this.prizeFox.position
         .copy(this.camera.position)
         .add(dir.multiplyScalar(1.5));
 
-      // Nudge it up a bit so it sits above the text
       this.prizeFox.position.y += 0.6;
-
-      // Make it face the camera (nice front view)
       this.prizeFox.lookAt(this.camera.position);
       this.prizeFox.visible = true;
     }
 
-    // Add keyframes for text pop
-    const style = document.createElement("style");
-    style.textContent = `
-      @keyframes win-pop-forward {
-        0% {
-          transform: translate3d(0, 0, -200px) scale(0.4) rotateX(15deg);
-          opacity: 0;
-        }
-        60% {
-          transform: translate3d(0, 0, 40px) scale(1.25) rotateX(0deg);
-          opacity: 1;
-        }
-        100% {
-          transform: translate3d(0, 0, 0) scale(1.1) rotateX(0deg);
-          opacity: 1;
-        }
-      }
-    `;
-    document.head.appendChild(style);
+    this.injectWinLoseKeyframes();
 
     const winOverlay = document.createElement("div");
-    winOverlay.id = "win-overlay";
+    winOverlay.id = "result-overlay";
     winOverlay.style.position = "absolute";
     winOverlay.style.inset = "0";
     winOverlay.style.display = "flex";
     winOverlay.style.alignItems = "center";
     winOverlay.style.justifyContent = "center";
-    winOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)"; // no gradient
+    winOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
     winOverlay.style.zIndex = "9999";
 
     const container = document.createElement("div");
@@ -185,7 +173,7 @@ export class Scene3_MilkToss {
     text.style.boxShadow = "0 0 25px rgba(0,0,0,0.8)";
     text.style.transformOrigin = "center";
     text.style.animation =
-      "win-pop-forward 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards";
+      "result-pop-forward 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards";
 
     container.appendChild(text);
     winOverlay.appendChild(container);
@@ -198,8 +186,81 @@ export class Scene3_MilkToss {
     }, 2000);
   }
 
+  private handleLose() {
+    if (this.gameOver) return;
+    this.gameOver = true;
+    this.hasWon = false;
+    console.log("[MilkToss] LOSE triggered");
 
+    this.hideUI();
+    this.controls.unlock();
 
+    this.injectWinLoseKeyframes();
+
+    const loseOverlay = document.createElement("div");
+    loseOverlay.id = "result-overlay";
+    loseOverlay.style.position = "absolute";
+    loseOverlay.style.inset = "0";
+    loseOverlay.style.display = "flex";
+    loseOverlay.style.alignItems = "center";
+    loseOverlay.style.justifyContent = "center";
+    loseOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
+    loseOverlay.style.zIndex = "9999";
+
+    const container = document.createElement("div");
+    container.style.perspective = "800px";
+    container.style.transformStyle = "preserve-3d";
+
+    const text = document.createElement("div");
+    text.textContent = "YOU LOSE!";
+    text.style.fontFamily = `"Impact", "Arial Black", system-ui`;
+    text.style.fontSize = "80px";
+    text.style.padding = "16px 40px";
+    text.style.color = "#ff5555";
+    text.style.letterSpacing = "6px";
+    text.style.textShadow =
+      "0 0 8px #000, 4px 4px 0 #5a0000, -2px -2px 0 #5a0000";
+    text.style.borderRadius = "10px";
+    text.style.border = "4px solid #5a0000";
+    text.style.boxShadow = "0 0 25px rgba(0,0,0,0.8)";
+    text.style.transformOrigin = "center";
+    text.style.animation =
+      "result-pop-forward 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards";
+
+    container.appendChild(text);
+    loseOverlay.appendChild(container);
+    document.body.appendChild(loseOverlay);
+
+    setTimeout(() => {
+      loseOverlay.remove();
+      this.onWin?.(); // same callback: go back to hub
+    }, 2000);
+  }
+
+  private injectWinLoseKeyframes() {
+    if (document.getElementById("result-pop-style")) return;
+    const style = document.createElement("style");
+    style.id = "result-pop-style";
+    style.textContent = `
+      @keyframes result-pop-forward {
+        0% {
+          transform: translate3d(0, 0, -200px) scale(0.4) rotateX(15deg);
+          opacity: 0;
+        }
+        60% {
+          transform: translate3d(0, 0, 40px) scale(1.25) rotateX(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translate3d(0, 0, 0) scale(1.1) rotateX(0deg);
+          opacity: 1;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // ------------- LOADING ---------------
 
   loadModel(path: string, onLoad: (model: THREE.Object3D) => void) {
     const loader = new GLTFLoader();
@@ -216,22 +277,21 @@ export class Scene3_MilkToss {
     const spacing = 0.6;
 
     const pyramidOffsets = [
-      [-spacing, 0.75, 0], // 0
-      [0, 0.75, 0], // 1
-      [spacing, 0.75, 0], // 2
-      [-spacing / 2, 0.75 + 0.65, 0], // 3
-      [spacing / 2, 0.75 + 0.65, 0], // 4
-      [0, 0.75 + 0.65 + 0.65, 0], // 5
+      [-spacing, 0.75, 0],
+      [0, 0.75, 0],
+      [spacing, 0.75, 0],
+      [-spacing / 2, 0.75 + 0.65, 0],
+      [spacing / 2, 0.75 + 0.65, 0],
+      [0, 0.75 + 0.65 + 0.65, 0],
     ];
 
-    // Define supports for top bottles
     const supportsMap = [
-      [], // 0 bottom
-      [], // 1 bottom
-      [], // 2 bottom
-      [0, 1], // 3 middle
-      [1, 2], // 4 middle
-      [3, 4], // 5 top
+      [],
+      [],
+      [],
+      [0, 1],
+      [1, 2],
+      [3, 4],
     ];
 
     pyramidOffsets.forEach((offset, index) => {
@@ -251,6 +311,14 @@ export class Scene3_MilkToss {
         this.bottles.push(model);
       });
     });
+  }
+
+  // ------------- UI ---------------
+
+  private updateBallsUI() {
+    if (!this.ballsLeftElement) return;
+    const left = Math.max(this.maxBalls - this.ballsThrown, 0);
+    this.ballsLeftElement.textContent = `Balls left: ${left}`;
   }
 
   showUI() {
@@ -285,6 +353,21 @@ export class Scene3_MilkToss {
       this.meterFillElement.style.backgroundColor = "lime";
       this.meterElement.appendChild(this.meterFillElement);
     }
+
+    if (!this.ballsLeftElement) {
+      this.ballsLeftElement = document.createElement("div");
+      this.ballsLeftElement.style.position = "absolute";
+      this.ballsLeftElement.style.top = "20px";
+      this.ballsLeftElement.style.left = "50%";
+      this.ballsLeftElement.style.transform = "translateX(-50%)";
+      this.ballsLeftElement.style.color = "white";
+      this.ballsLeftElement.style.fontFamily = "sans-serif";
+      this.ballsLeftElement.style.fontSize = "20px";
+      this.ballsLeftElement.style.textShadow = "0 0 4px black";
+      document.body.appendChild(this.ballsLeftElement);
+    }
+
+    this.updateBallsUI();
   }
 
   hideUI() {
@@ -294,27 +377,37 @@ export class Scene3_MilkToss {
     if (this.meterElement && this.meterElement.parentElement) {
       this.meterElement.parentElement.removeChild(this.meterElement);
     }
+    if (this.ballsLeftElement && this.ballsLeftElement.parentElement) {
+      this.ballsLeftElement.parentElement.removeChild(this.ballsLeftElement);
+    }
     this.cursorElement = null;
     this.meterElement = null;
     this.meterFillElement = null;
+    this.ballsLeftElement = null;
   }
 
+  // ------------- THROWING ---------------
 
   startCharging() {
+    if (this.gameOver) return;
     this.charging = true;
   }
 
-  // Change this in throwBall()
   throwBall() {
-    if (!this.charging) return;
+    if (!this.charging || this.gameOver) return;
 
-    // Only fire if meterValue is above a minimum threshold
     const minCharge = 0.05;
     if (this.meterValue < minCharge) {
       this.charging = false;
       this.meterValue = 0;
       if (this.meterFillElement) this.meterFillElement.style.width = "0%";
-      return; // do not fire
+      return;
+    }
+
+    // No more balls?
+    if (this.ballsThrown >= this.maxBalls) {
+      this.charging = false;
+      return;
     }
 
     this.charging = false;
@@ -336,9 +429,14 @@ export class Scene3_MilkToss {
     this.scene.add(ball);
     this.balls.push(ball);
 
+    this.ballsThrown++;
+    this.updateBallsUI();
+
     this.meterValue = 0;
     if (this.meterFillElement) this.meterFillElement.style.width = "0%";
   }
+
+  // ------------- UPDATE LOOP ---------------
 
   update(delta: number) {
     // Update charge meter
@@ -380,7 +478,6 @@ export class Scene3_MilkToss {
     this.bottles.forEach((bottle) => {
       const data = bottle.userData as BottleData;
 
-      // Check supports
       if (!data.broken && data.supports && data.supports.length > 0) {
         const allBroken = data.supports.every((s) =>
           (s.userData as BottleData).broken
@@ -395,7 +492,6 @@ export class Scene3_MilkToss {
         }
       }
 
-      // Apply gravity
       if (data.broken && data.velocity) {
         data.velocity.y += -9.8 * delta;
         bottle.position.addScaledVector(data.velocity, delta);
@@ -407,11 +503,13 @@ export class Scene3_MilkToss {
       }
     });
 
-    // WIN CONDITION: all bottles broken and on / near the ground
-    if (!this.hasWon && this.bottles.length > 0) {
-      const allDown = this.bottles.every((bottle) => {
+    // Check win & lose conditions
+    let allDown = false;
+
+    if (!this.gameOver && this.bottles.length > 0) {
+      allDown = this.bottles.every((bottle) => {
         const data = bottle.userData as BottleData;
-        const onGround = bottle.position.y <= 0.11; // tiny epsilon
+        const onGround = bottle.position.y <= 0.11;
         return data.broken && onGround;
       });
 
@@ -420,12 +518,20 @@ export class Scene3_MilkToss {
       }
     }
 
+    if (
+      !this.gameOver &&
+      this.ballsThrown >= this.maxBalls &&
+      this.balls.length === 0 &&
+      !allDown
+    ) {
+      this.handleLose();
+    }
+
     // Spin prize fox while in win state
-    if (this.hasWon && this.prizeFox && this.prizeFox.visible) {
-      this.prizeFox.rotation.y += 2 * delta; // 2 rad/s – tweak to taste
+    if (this.gameOver && this.hasWon && this.prizeFox && this.prizeFox.visible) {
+      this.prizeFox.rotation.y += 2 * delta;
     }
 
     this.renderer.render(this.scene, this.camera);
-
   }
 }
