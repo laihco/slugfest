@@ -29,8 +29,16 @@ export class Scene3_MilkToss {
   balls: THREE.Mesh[] = [];
   bottles: THREE.Object3D[] = [];
 
-  constructor(renderer: THREE.WebGLRenderer) {
+  // Win condition
+  private hasWon = false;
+  private onWin?: () => void;
+
+  // Prize fox model
+  private prizeFox: THREE.Object3D | null = null;
+
+  constructor(renderer: THREE.WebGLRenderer, onWin?: () => void) {
     this.renderer = renderer;
+    this.onWin = onWin;
 
     // Scene
     this.scene = new THREE.Scene();
@@ -80,11 +88,11 @@ export class Scene3_MilkToss {
     // Load pyramid bottles
     this.loadBottles(cube.position.clone());
 
-    //load tent
-    this.loadModel("/assets/models/milkTent.glb", (model) => {
-      model.position.copy(cube.position);
-      model.rotation.x = Math.PI;
-      model.scale.setScalar(4);
+    // Load prize fox model (hidden until win)
+    this.loadModel("/assets/models/fox_toy.glb", (model) => {
+      model.visible = false;        // hide until win
+      model.scale.setScalar(0.6);   // adjust for size
+      this.prizeFox = model;
       this.scene.add(model);
     });
 
@@ -101,6 +109,97 @@ export class Scene3_MilkToss {
       () => this.throwBall(),
     );
   }
+
+  //Win conditions
+  private handleWin() {
+    if (this.hasWon) return;
+    this.hasWon = true;
+    console.log("[MilkToss] WIN triggered");
+
+    this.hideUI();
+    this.controls.unlock();
+
+    // Position fox in front of camera, above the text
+    if (this.prizeFox) {
+      const dir = new THREE.Vector3();
+      this.camera.getWorldDirection(dir);
+
+      // 1.5 units in front of camera
+      this.prizeFox.position
+        .copy(this.camera.position)
+        .add(dir.multiplyScalar(1.5));
+
+      // Nudge it up a bit so it sits above the text
+      this.prizeFox.position.y += 0.6;
+
+      // Make it face the camera (nice front view)
+      this.prizeFox.lookAt(this.camera.position);
+      this.prizeFox.visible = true;
+    }
+
+    // Add keyframes for text pop
+    const style = document.createElement("style");
+    style.textContent = `
+      @keyframes win-pop-forward {
+        0% {
+          transform: translate3d(0, 0, -200px) scale(0.4) rotateX(15deg);
+          opacity: 0;
+        }
+        60% {
+          transform: translate3d(0, 0, 40px) scale(1.25) rotateX(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translate3d(0, 0, 0) scale(1.1) rotateX(0deg);
+          opacity: 1;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    const winOverlay = document.createElement("div");
+    winOverlay.id = "win-overlay";
+    winOverlay.style.position = "absolute";
+    winOverlay.style.inset = "0";
+    winOverlay.style.display = "flex";
+    winOverlay.style.alignItems = "center";
+    winOverlay.style.justifyContent = "center";
+    winOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)"; // no gradient
+    winOverlay.style.zIndex = "9999";
+
+    const container = document.createElement("div");
+    container.style.perspective = "800px";
+    container.style.transformStyle = "preserve-3d";
+
+    const text = document.createElement("div");
+    text.textContent = "YOU WIN!";
+    text.style.fontFamily = `"Impact", "Arial Black", system-ui`;
+    text.style.fontSize = "80px";
+    text.style.padding = "16px 40px";
+    text.style.color = "#ffdd00";
+    text.style.letterSpacing = "6px";
+    text.style.textShadow =
+      "0 0 8px #000, 4px 4px 0 #a00000, -2px -2px 0 #a00000";
+    text.style.borderRadius = "10px";
+    text.style.border = "4px solid #a00000";
+    text.style.boxShadow = "0 0 25px rgba(0,0,0,0.8)";
+    text.style.transformOrigin = "center";
+    text.style.animation =
+      "win-pop-forward 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards";
+
+    container.appendChild(text);
+    winOverlay.appendChild(container);
+    document.body.appendChild(winOverlay);
+
+    setTimeout(() => {
+      winOverlay.remove();
+      if (this.prizeFox) this.prizeFox.visible = false;
+      this.onWin?.();
+    }, 2000);
+  }
+
+
+
 
   loadModel(path: string, onLoad: (model: THREE.Object3D) => void) {
     const loader = new GLTFLoader();
@@ -189,12 +288,17 @@ export class Scene3_MilkToss {
   }
 
   hideUI() {
-    if (this.cursorElement) document.body.removeChild(this.cursorElement);
-    if (this.meterElement) document.body.removeChild(this.meterElement);
+    if (this.cursorElement && this.cursorElement.parentElement) {
+      this.cursorElement.parentElement.removeChild(this.cursorElement);
+    }
+    if (this.meterElement && this.meterElement.parentElement) {
+      this.meterElement.parentElement.removeChild(this.meterElement);
+    }
     this.cursorElement = null;
     this.meterElement = null;
     this.meterFillElement = null;
   }
+
 
   startCharging() {
     this.charging = true;
@@ -303,6 +407,25 @@ export class Scene3_MilkToss {
       }
     });
 
+    // WIN CONDITION: all bottles broken and on / near the ground
+    if (!this.hasWon && this.bottles.length > 0) {
+      const allDown = this.bottles.every((bottle) => {
+        const data = bottle.userData as BottleData;
+        const onGround = bottle.position.y <= 0.11; // tiny epsilon
+        return data.broken && onGround;
+      });
+
+      if (allDown) {
+        this.handleWin();
+      }
+    }
+
+    // Spin prize fox while in win state
+    if (this.hasWon && this.prizeFox && this.prizeFox.visible) {
+      this.prizeFox.rotation.y += 2 * delta; // 2 rad/s – tweak to taste
+    }
+
     this.renderer.render(this.scene, this.camera);
+
   }
 }
