@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020", // Modern JS
+    "module": "ES2020", // Keep ES modules for browser
+    "moduleResolution": "node", // Resolve node-style imports
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "strict": true, // Strict type checks
+    "skipLibCheck": true, // Skip types for node_modules
+    "esModuleInterop": true, // Allow default imports from CommonJS
+    "allowJs": true, // Allow JS files if needed
+    "outDir": "./dist", // Output folder for compiled JS
+    "rootDir": "./src", // Base folder for TS sources
+    "resolveJsonModule": true, // Support JSON imports
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false // Optional: avoids too many 'any' complaints
+  },
+  "include": ["src/**/*"], // Compile all TS/JS in src
+  "exclude": ["node_modules", "dist"] // Ignore these folders
+}
