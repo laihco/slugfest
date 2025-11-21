@@ -1,31 +1,25 @@
 {
-  "hash": "e776ca2f",
-  "configHash": "f675abb6",
+  "hash": "366d4551",
+  "configHash": "2adce57a",
   "lockfileHash": "e3b0c442",
-  "browserHash": "3fb437e8",
+  "browserHash": "b14733fb",
   "optimized": {
-    "three/examples/jsm/loaders/GLTFLoader.js": {
-      "src": "../../node_modules/.deno/three@0.172.0/node_modules/three/examples/jsm/loaders/GLTFLoader.js",
-      "file": "three_examples_jsm_loaders_GLTFLoader__js.js",
-      "fileHash": "6362db21",
-      "needsInterop": false
-    },
     "three": {
       "src": "../../node_modules/.deno/three@0.172.0/node_modules/three/build/three.module.js",
       "file": "three.js",
-      "fileHash": "2af2473f",
-      "needsInterop": false
-    },
-    "three/examples/jsm/controls/OrbitControls.js": {
-      "src": "../../node_modules/.deno/three@0.172.0/node_modules/three/examples/jsm/controls/OrbitControls.js",
-      "file": "three_examples_jsm_controls_OrbitControls__js.js",
-      "fileHash": "3280197d",
+      "fileHash": "d5743298",
       "needsInterop": false
     },
     "three/examples/jsm/controls/PointerLockControls.js": {
       "src": "../../node_modules/.deno/three@0.172.0/node_modules/three/examples/jsm/controls/PointerLockControls.js",
       "file": "three_examples_jsm_controls_PointerLockControls__js.js",
-      "fileHash": "ff611a78",
+      "fileHash": "4c28f86e",
+      "needsInterop": false
+    },
+    "three/examples/jsm/loaders/GLTFLoader.js": {
+      "src": "../../node_modules/.deno/three@0.172.0/node_modules/three/examples/jsm/loaders/GLTFLoader.js",
+      "file": "three_examples_jsm_loaders_GLTFLoader__js.js",
+      "fileHash": "aa0714b2",
       "needsInterop": false
     }
   },

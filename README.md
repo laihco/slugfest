@@ -37,6 +37,16 @@ Melissa
 
 - Box can collide with the player like a pressure plate to call scene transition
 
+Matthew
+
+- Created models for bottles and player in Blender
+
+- Ball Toss Functional with UI
+
+- Bottle Toss game completed with working physics
+
+- Added Ability to change scenes properly
+
 11/20/2025
 
 Melissa
