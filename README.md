@@ -47,6 +47,18 @@ Matthew
 
 - Added Ability to change scenes properly
 
+Ananya
+  
+- Modeled a 3D Water Gun Stand in Blender to be used for one of the carnival minigames. This includes the base stand, water tank housing, and initial placeholder targets. Exported the asset as .glb and prepped it for integration into Three.js.
+
+- Worked on a separate feature branch focused on minigame structure and scene logic. Progress isn’t yet merged into main, but includes:
+
+  - Targetry and researching water physics
+
+  - Created and adjusting custom materials for the Water Gun Stand, including  shading, glossy plastic surfaces, and water tank transparency. Experimented with Blender's material nodes to get a readable look that still works well once exported to Three.js.
+
+Investigated scene-to-scene state persistence so players can return to the hub with updated prize counts.
+
 11/20/2025
 
 Melissa
@@ -56,6 +68,15 @@ Melissa
 - Implimented the 3D model
 
 - Added collision with tent so player cannot phase through it
+
+11/21/2025
+
+Ananya 
+
+- Working on implementing win/lose conditions
+  - game start/stop states
+  - checking win thresholds
+  - returning the player to the main hub
 
 ## Introducing the team
 
