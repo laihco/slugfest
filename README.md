@@ -29,6 +29,34 @@ Matthew
 
 - Loaded Blender player model (.glb) into scene
 
+11/19/25
+
+Melissa
+
+- Set up a square cube as a box mesh with editable size, and height
+
+- Box can collide with the player like a pressure plate to call scene transition
+
+Matthew
+
+- Created models for bottles and player in Blender
+
+- Ball Toss Functional with UI
+
+- Bottle Toss game completed with working physics
+
+- Added Ability to change scenes properly
+
+11/20/2025
+
+Melissa
+
+- 3D modeled a carnival tent for the main hub and the Milk Toss game
+
+- Implimented the 3D model
+
+- Added collision with tent so player cannot phase through it
+
 ## Introducing the team
 
 Either organizing by person or by role, tell us who will do what on your team. Your team should span at least the following four roles:
