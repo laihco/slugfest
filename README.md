@@ -78,7 +78,7 @@ Ananya
   - checking win thresholds
   - returning the player to the main hub
 
-## F1 Requirnments
+## F1 Requirements
 
 1. The platform we decided to use is TypeScript which does not already provide support for 3D rendering and physics simulation. TypeScript is our primary langauyge and framework for this project with calls to THREE.js for all of our 3D rendering. 
    
