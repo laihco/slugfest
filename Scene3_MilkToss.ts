@@ -31,14 +31,14 @@ export class Scene3_MilkToss {
 
   // Win condition
   private hasWon = false;
-  private onWin?: () => void;
+  private onWin: () => void; // no longer optional
 
   // Prize fox model
   private prizeFox: THREE.Object3D | null = null;
 
   constructor(renderer: THREE.WebGLRenderer, onWin?: () => void) {
     this.renderer = renderer;
-    this.onWin = onWin;
+    this.onWin = onWin ?? (() => {}); // default to empty function
 
     // Scene
     this.scene = new THREE.Scene();
@@ -90,8 +90,8 @@ export class Scene3_MilkToss {
 
     // Load prize fox model (hidden until win)
     this.loadModel("/assets/models/fox_toy.glb", (model) => {
-      model.visible = false;        // hide until win
-      model.scale.setScalar(0.6);   // adjust for size
+      model.visible = false; // hide until win
+      model.scale.setScalar(0.6); // adjust for size
       this.prizeFox = model;
       this.scene.add(model);
     });
@@ -110,7 +110,7 @@ export class Scene3_MilkToss {
     );
   }
 
-  //Win conditions
+  // Win conditions
   private handleWin() {
     if (this.hasWon) return;
     this.hasWon = true;
@@ -194,13 +194,11 @@ export class Scene3_MilkToss {
     setTimeout(() => {
       winOverlay.remove();
       if (this.prizeFox) this.prizeFox.visible = false;
-      this.onWin?.();
+      this.onWin(); // safe now, no optional chaining
     }, 2000);
   }
 
-
-
-
+  // Load a GLB model
   loadModel(path: string, onLoad: (model: THREE.Object3D) => void) {
     const loader = new GLTFLoader();
     loader.load(
@@ -211,17 +209,18 @@ export class Scene3_MilkToss {
     );
   }
 
+  // Load bottles in a pyramid formation
   loadBottles(basePosition: THREE.Vector3) {
     const initialScale = 0.2;
     const spacing = 0.6;
 
     const pyramidOffsets = [
-      [-spacing, 0.75, 0], // 0
-      [0, 0.75, 0], // 1
-      [spacing, 0.75, 0], // 2
-      [-spacing / 2, 0.75 + 0.65, 0], // 3
-      [spacing / 2, 0.75 + 0.65, 0], // 4
-      [0, 0.75 + 0.65 + 0.65, 0], // 5
+      [-spacing, 0.75, 0], // bottom row
+      [0, 0.75, 0], // bottom row
+      [spacing, 0.75, 0], // bottom row
+      [-spacing / 2, 0.75 + 0.65, 0], // middle row
+      [spacing / 2, 0.75 + 0.65, 0], // middle row
+      [0, 0.75 + 0.65 + 0.65, 0], // top
     ];
 
     // Define supports for top bottles
@@ -253,6 +252,7 @@ export class Scene3_MilkToss {
     });
   }
 
+  // Show crosshair and charge meter UI
   showUI() {
     if (!this.cursorElement) {
       this.cursorElement = document.createElement("img");
@@ -287,6 +287,7 @@ export class Scene3_MilkToss {
     }
   }
 
+  // Hide UI
   hideUI() {
     if (this.cursorElement && this.cursorElement.parentElement) {
       this.cursorElement.parentElement.removeChild(this.cursorElement);
@@ -299,22 +300,21 @@ export class Scene3_MilkToss {
     this.meterFillElement = null;
   }
 
-
+  // Start charging throw
   startCharging() {
     this.charging = true;
   }
 
-  // Change this in throwBall()
+  // Throw a ball based on charge
   throwBall() {
     if (!this.charging) return;
 
-    // Only fire if meterValue is above a minimum threshold
     const minCharge = 0.05;
     if (this.meterValue < minCharge) {
       this.charging = false;
       this.meterValue = 0;
       if (this.meterFillElement) this.meterFillElement.style.width = "0%";
-      return; // do not fire
+      return;
     }
 
     this.charging = false;
@@ -340,6 +340,7 @@ export class Scene3_MilkToss {
     if (this.meterFillElement) this.meterFillElement.style.width = "0%";
   }
 
+  // Update scene every frame
   update(delta: number) {
     // Update charge meter
     if (this.charging) {
@@ -353,7 +354,7 @@ export class Scene3_MilkToss {
     // Update balls
     this.balls.forEach((ball) => {
       const velocity = (ball.userData as BallData).velocity;
-      velocity.y += -9.8 * delta;
+      velocity.y += -9.8 * delta; // gravity
       ball.position.addScaledVector(velocity, delta);
 
       // Ball hits bottle
@@ -372,6 +373,7 @@ export class Scene3_MilkToss {
         }
       });
 
+      // Remove balls below ground
       if (ball.position.y < 0) this.scene.remove(ball);
     });
     this.balls = this.balls.filter((b) => b.position.y >= 0);
@@ -395,7 +397,7 @@ export class Scene3_MilkToss {
         }
       }
 
-      // Apply gravity
+      // Apply gravity if broken
       if (data.broken && data.velocity) {
         data.velocity.y += -9.8 * delta;
         bottle.position.addScaledVector(data.velocity, delta);
@@ -407,25 +409,21 @@ export class Scene3_MilkToss {
       }
     });
 
-    // WIN CONDITION: all bottles broken and on / near the ground
+    // WIN CONDITION: all bottles broken and on/near the ground
     if (!this.hasWon && this.bottles.length > 0) {
       const allDown = this.bottles.every((bottle) => {
         const data = bottle.userData as BottleData;
-        const onGround = bottle.position.y <= 0.11; // tiny epsilon
-        return data.broken && onGround;
+        return data.broken && bottle.position.y <= 0.11;
       });
-
-      if (allDown) {
-        this.handleWin();
-      }
+      if (allDown) this.handleWin();
     }
 
     // Spin prize fox while in win state
     if (this.hasWon && this.prizeFox && this.prizeFox.visible) {
-      this.prizeFox.rotation.y += 2 * delta; // 2 rad/s – tweak to taste
+      this.prizeFox.rotation.y += 2 * delta; // 2 rad/s
     }
 
+    // Render the scene
     this.renderer.render(this.scene, this.camera);
-
   }
 }

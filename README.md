@@ -48,14 +48,14 @@ Matthew
 - Added Ability to change scenes properly
 
 Ananya
-  
+
 - Modeled a 3D Water Gun Stand in Blender to be used for one of the carnival minigames. This includes the base stand, water tank housing, and initial placeholder targets. Exported the asset as .glb and prepped it for integration into Three.js.
 
 - Worked on a separate feature branch focused on minigame structure and scene logic. Progress isn’t yet merged into main, but includes:
 
   - Targetry and researching water physics
 
-  - Created and adjusting custom materials for the Water Gun Stand, including  shading, glossy plastic surfaces, and water tank transparency. Experimented with Blender's material nodes to get a readable look that still works well once exported to Three.js.
+  - Created and adjusting custom materials for the Water Gun Stand, including shading, glossy plastic surfaces, and water tank transparency. Experimented with Blender's material nodes to get a readable look that still works well once exported to Three.js.
 
 Investigated scene-to-scene state persistence so players can return to the hub with updated prize counts.
 
@@ -71,7 +71,7 @@ Melissa
 
 11/21/2025
 
-Ananya 
+Ananya
 
 - Working on implementing win/lose conditions
   - game start/stop states
@@ -80,22 +80,22 @@ Ananya
 
 ## F1 Requirements
 
-1. The platform we decided to use is TypeScript which does not already provide support for 3D rendering and physics simulation. TypeScript is our primary langauyge and framework for this project with calls to THREE.js for all of our 3D rendering. 
-   
+1. The platform we decided to use is TypeScript which does not already provide support for 3D rendering and physics simulation. TypeScript is our primary langauyge and framework for this project with calls to THREE.js for all of our 3D rendering.
+
 2. Our Third party 3D rendering party is THREE.js. THREE.js is a open-source JavaScript library which helps us create and display our 3D graphics. Adding features such as
-scene graph, geometrics, materials and shaders, lighting, textures, loaders and much more. We use THREE.js to load in all of our 3D models place them in the world and      render them.
+   scene graph, geometrics, materials and shaders, lighting, textures, loaders and much more. We use THREE.js to load in all of our 3D models place them in the world and render them.
 
 3. Our third party physics simulation is not used via a library but all coded by Matt Kin. The physics we use as of right now is the player load in, in which the player will fall from the sky, as well as the ball throwing in our frist game Milk Toss. The ball is charged up using left clicked and then thrown as far as you have held the click. So in short, the longer you hold left click the stronger the force the ball with be tossed.
 
 4. The playable prototype of our game includes the first mini game of the carnival Slug Fest, that being the Milk Toss. The player is placed in front of a tower of milk bottles of which they must knock them all down in order to win. If the player fails to knock down all the pins within the number of balls then they lose.
 
 5. The players control over the simulation is within there aim, and strength of the ball throw, if the player doesnt aim correctly then they will fail to knock all the bottles down. Moreover, if they do not hold down left click for long, the balls strength and distance will not travel enough to hit the bottles. However, if they take care of there aim and there control over how fair and the strength of the ball throw, they can succedd at the puzzle.
-   
+
 6. If the player knocks down all the bottles then the game will send you to a you win scene. If the player runs out of balls then it will take the player to a you use screen. Both of which will contain a button that will take you back to the main hub to try again.
-   
+
 7. Our codebase containes berfore-commit automation via linting and auto formatting. Within our deno.json for linting we have lint config and lint task. For auto formatting our deno.json contains formatting settings and tasks. We also have some typechecking and build checks within our deno.json, as it defines check and ci tasks.
-   
-8. As some post-push automation that helps developers our project contains automatic packaging and deployment to GitHub pages, we also have the automatic download of deno so anyone who opens the code with automatically be able to use deno commands within codespaces.  
+
+8. As some post-push automation that helps developers our project contains automatic packaging and deployment to GitHub pages, we also have the automatic download of deno so anyone who opens the code with automatically be able to use deno commands within codespaces.
 
 ## Introducing the team
 
