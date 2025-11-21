@@ -80,6 +80,14 @@ export class Scene3_MilkToss {
     // Load pyramid bottles
     this.loadBottles(cube.position.clone());
 
+    //load tent
+    this.loadModel("/assets/models/milkTent.glb", (model) => {
+      model.position.copy(cube.position);
+      model.rotation.x = Math.PI;
+      model.scale.setScalar(4);
+      this.scene.add(model);
+    });
+
     // UI
     this.showUI();
 

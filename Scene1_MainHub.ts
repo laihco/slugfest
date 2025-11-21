@@ -30,9 +30,16 @@ export class Scene1_MainHub {
   cameraLerpSpeed = 0.1;
 
   //Scene Transition Cubes
-  scene3CubePosition = new THREE.Vector3(-10, 0.1, -10);
+  scene3CubePosition = new THREE.Vector3(-10, 0.1, -8);
   cubeSize = 2;
   cube3Mesh: THREE.Mesh;
+
+  //Carnival Tents
+  milkTossTentPosition = new THREE.Vector3(-10, 1, -15);
+  tentRotationX = Math.PI;
+  tentScale = 3;
+  tentRadius = 2.4;
+  milkTossTent: THREE.Object3D;
 
   constructor(renderer: THREE.WebGLRenderer) {
     this.renderer = renderer;
@@ -75,7 +82,11 @@ export class Scene1_MainHub {
     this.player.rotation.y = this.playerStartRotationY;
     this.scene.add(this.player);
 
-    this.loadGLBModel("/assets/models/Player.glb");
+    this.loadGLBModel(
+      "/assets/models/Player.glb",
+      this.player,
+      this.playerScale,
+    );
     this.setupControls();
 
     //Scene Cubes
@@ -88,6 +99,18 @@ export class Scene1_MainHub {
     this.cube3Mesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
     this.cube3Mesh.position.copy(this.scene3CubePosition);
     this.scene.add(this.cube3Mesh);
+
+    //Game Tents
+    this.milkTossTent = new THREE.Object3D();
+    this.milkTossTent.position.copy(this.milkTossTentPosition);
+    this.milkTossTent.rotation.x = this.tentRotationX;
+    this.scene.add(this.milkTossTent);
+
+    this.loadGLBModel(
+      "/assets/models/milkTent.glb",
+      this.milkTossTent,
+      this.tentScale,
+    );
   }
 
   addSkyGradient() {
@@ -115,15 +138,15 @@ export class Scene1_MainHub {
     this.scene.add(skyMesh);
   }
 
-  loadGLBModel(path: string) {
+  loadGLBModel(path: string, object: THREE.Object3D, scale: number) {
     const loader = new GLTFLoader();
     loader.load(
       path,
       (gltf: GLTF) => {
         const model = gltf.scene;
         model.position.set(0, 0, 0);
-        model.scale.set(this.playerScale, this.playerScale, this.playerScale);
-        this.player.add(model);
+        model.scale.set(scale, scale, scale);
+        object.add(model);
       },
       undefined,
     );
@@ -163,6 +186,15 @@ export class Scene1_MainHub {
     if (playerFeetY < floorTopY) {
       this.player.position.y = floorTopY + this.playerHeight / 2;
       this.velocityY = 0;
+    }
+
+    const playerOffset = new THREE.Vector3(0, 0, 0);
+    playerOffset.subVectors(this.player.position, this.milkTossTent.position);
+    playerOffset.y = 0;
+    if (playerOffset.length() < this.tentRadius * this.tentScale) {
+      playerOffset.setLength(this.tentRadius * this.tentScale);
+      this.player.position.x = this.milkTossTent.position.x + playerOffset.x;
+      this.player.position.z = this.milkTossTent.position.z + playerOffset.z;
     }
   }
 
