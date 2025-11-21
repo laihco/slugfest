@@ -38,15 +38,14 @@ export class Scene3_MilkToss {
 
   // Game state
   private hasWon = false;
-  private gameOver = false;
-  private onWin?: () => void;
+  private onWin: () => void; // no longer optional
 
   // Prize fox model
   private prizeFox: THREE.Object3D | null = null;
 
   constructor(renderer: THREE.WebGLRenderer, onWin?: () => void) {
     this.renderer = renderer;
-    this.onWin = onWin;
+    this.onWin = onWin ?? (() => {}); // default to empty function
 
     // Scene
     this.scene = new THREE.Scene();
@@ -98,8 +97,8 @@ export class Scene3_MilkToss {
 
     // Load prize fox model (hidden until win)
     this.loadModel("/assets/models/fox_toy.glb", (model) => {
-      model.visible = false;
-      model.scale.setScalar(0.6);
+      model.visible = false; // hide until win
+      model.scale.setScalar(0.6); // adjust for size
       this.prizeFox = model;
       this.scene.add(model);
     });
@@ -118,8 +117,7 @@ export class Scene3_MilkToss {
     );
   }
 
-  // ------------- WIN / LOSE ---------------
-
+  // Win conditions
   private handleWin() {
     if (this.gameOver) return;
     this.gameOver = true;
@@ -182,86 +180,11 @@ export class Scene3_MilkToss {
     setTimeout(() => {
       winOverlay.remove();
       if (this.prizeFox) this.prizeFox.visible = false;
-      this.onWin?.();
+      this.onWin(); // safe now, no optional chaining
     }, 2000);
   }
 
-  private handleLose() {
-    if (this.gameOver) return;
-    this.gameOver = true;
-    this.hasWon = false;
-    console.log("[MilkToss] LOSE triggered");
-
-    this.hideUI();
-    this.controls.unlock();
-
-    this.injectWinLoseKeyframes();
-
-    const loseOverlay = document.createElement("div");
-    loseOverlay.id = "result-overlay";
-    loseOverlay.style.position = "absolute";
-    loseOverlay.style.inset = "0";
-    loseOverlay.style.display = "flex";
-    loseOverlay.style.alignItems = "center";
-    loseOverlay.style.justifyContent = "center";
-    loseOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
-    loseOverlay.style.zIndex = "9999";
-
-    const container = document.createElement("div");
-    container.style.perspective = "800px";
-    container.style.transformStyle = "preserve-3d";
-
-    const text = document.createElement("div");
-    text.textContent = "YOU LOSE!";
-    text.style.fontFamily = `"Impact", "Arial Black", system-ui`;
-    text.style.fontSize = "80px";
-    text.style.padding = "16px 40px";
-    text.style.color = "#ff5555";
-    text.style.letterSpacing = "6px";
-    text.style.textShadow =
-      "0 0 8px #000, 4px 4px 0 #5a0000, -2px -2px 0 #5a0000";
-    text.style.borderRadius = "10px";
-    text.style.border = "4px solid #5a0000";
-    text.style.boxShadow = "0 0 25px rgba(0,0,0,0.8)";
-    text.style.transformOrigin = "center";
-    text.style.animation =
-      "result-pop-forward 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards";
-
-    container.appendChild(text);
-    loseOverlay.appendChild(container);
-    document.body.appendChild(loseOverlay);
-
-    setTimeout(() => {
-      loseOverlay.remove();
-      this.onWin?.(); // same callback: go back to hub
-    }, 2000);
-  }
-
-  private injectWinLoseKeyframes() {
-    if (document.getElementById("result-pop-style")) return;
-    const style = document.createElement("style");
-    style.id = "result-pop-style";
-    style.textContent = `
-      @keyframes result-pop-forward {
-        0% {
-          transform: translate3d(0, 0, -200px) scale(0.4) rotateX(15deg);
-          opacity: 0;
-        }
-        60% {
-          transform: translate3d(0, 0, 40px) scale(1.25) rotateX(0deg);
-          opacity: 1;
-        }
-        100% {
-          transform: translate3d(0, 0, 0) scale(1.1) rotateX(0deg);
-          opacity: 1;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  // ------------- LOADING ---------------
-
+  // Load a GLB model
   loadModel(path: string, onLoad: (model: THREE.Object3D) => void) {
     const loader = new GLTFLoader();
     loader.load(
@@ -272,17 +195,18 @@ export class Scene3_MilkToss {
     );
   }
 
+  // Load bottles in a pyramid formation
   loadBottles(basePosition: THREE.Vector3) {
     const initialScale = 0.2;
     const spacing = 0.6;
 
     const pyramidOffsets = [
-      [-spacing, 0.75, 0],
-      [0, 0.75, 0],
-      [spacing, 0.75, 0],
-      [-spacing / 2, 0.75 + 0.65, 0],
-      [spacing / 2, 0.75 + 0.65, 0],
-      [0, 0.75 + 0.65 + 0.65, 0],
+      [-spacing, 0.75, 0], // bottom row
+      [0, 0.75, 0], // bottom row
+      [spacing, 0.75, 0], // bottom row
+      [-spacing / 2, 0.75 + 0.65, 0], // middle row
+      [spacing / 2, 0.75 + 0.65, 0], // middle row
+      [0, 0.75 + 0.65 + 0.65, 0], // top
     ];
 
     const supportsMap = [
@@ -313,14 +237,7 @@ export class Scene3_MilkToss {
     });
   }
 
-  // ------------- UI ---------------
-
-  private updateBallsUI() {
-    if (!this.ballsLeftElement) return;
-    const left = Math.max(this.maxBalls - this.ballsThrown, 0);
-    this.ballsLeftElement.textContent = `Balls left: ${left}`;
-  }
-
+  // Show crosshair and charge meter UI
   showUI() {
     if (!this.cursorElement) {
       this.cursorElement = document.createElement("img");
@@ -370,6 +287,7 @@ export class Scene3_MilkToss {
     this.updateBallsUI();
   }
 
+  // Hide UI
   hideUI() {
     if (this.cursorElement && this.cursorElement.parentElement) {
       this.cursorElement.parentElement.removeChild(this.cursorElement);
@@ -386,13 +304,13 @@ export class Scene3_MilkToss {
     this.ballsLeftElement = null;
   }
 
-  // ------------- THROWING ---------------
-
+  // Start charging throw
   startCharging() {
     if (this.gameOver) return;
     this.charging = true;
   }
 
+  // Throw a ball based on charge
   throwBall() {
     if (!this.charging || this.gameOver) return;
 
@@ -401,12 +319,6 @@ export class Scene3_MilkToss {
       this.charging = false;
       this.meterValue = 0;
       if (this.meterFillElement) this.meterFillElement.style.width = "0%";
-      return;
-    }
-
-    // No more balls?
-    if (this.ballsThrown >= this.maxBalls) {
-      this.charging = false;
       return;
     }
 
@@ -436,8 +348,7 @@ export class Scene3_MilkToss {
     if (this.meterFillElement) this.meterFillElement.style.width = "0%";
   }
 
-  // ------------- UPDATE LOOP ---------------
-
+  // Update scene every frame
   update(delta: number) {
     // Update charge meter
     if (this.charging) {
@@ -451,7 +362,7 @@ export class Scene3_MilkToss {
     // Update balls
     this.balls.forEach((ball) => {
       const velocity = (ball.userData as BallData).velocity;
-      velocity.y += -9.8 * delta;
+      velocity.y += -9.8 * delta; // gravity
       ball.position.addScaledVector(velocity, delta);
 
       // Ball hits bottle
@@ -470,6 +381,7 @@ export class Scene3_MilkToss {
         }
       });
 
+      // Remove balls below ground
       if (ball.position.y < 0) this.scene.remove(ball);
     });
     this.balls = this.balls.filter((b) => b.position.y >= 0);
@@ -492,6 +404,7 @@ export class Scene3_MilkToss {
         }
       }
 
+      // Apply gravity if broken
       if (data.broken && data.velocity) {
         data.velocity.y += -9.8 * delta;
         bottle.position.addScaledVector(data.velocity, delta);
@@ -503,19 +416,13 @@ export class Scene3_MilkToss {
       }
     });
 
-    // Check win & lose conditions
-    let allDown = false;
-
-    if (!this.gameOver && this.bottles.length > 0) {
-      allDown = this.bottles.every((bottle) => {
+    // WIN CONDITION: all bottles broken and on/near the ground
+    if (!this.hasWon && this.bottles.length > 0) {
+      const allDown = this.bottles.every((bottle) => {
         const data = bottle.userData as BottleData;
-        const onGround = bottle.position.y <= 0.11;
-        return data.broken && onGround;
+        return data.broken && bottle.position.y <= 0.11;
       });
-
-      if (allDown) {
-        this.handleWin();
-      }
+      if (allDown) this.handleWin();
     }
 
     if (
@@ -528,10 +435,11 @@ export class Scene3_MilkToss {
     }
 
     // Spin prize fox while in win state
-    if (this.gameOver && this.hasWon && this.prizeFox && this.prizeFox.visible) {
-      this.prizeFox.rotation.y += 2 * delta;
+    if (this.hasWon && this.prizeFox && this.prizeFox.visible) {
+      this.prizeFox.rotation.y += 2 * delta; // 2 rad/s
     }
 
+    // Render the scene
     this.renderer.render(this.scene, this.camera);
   }
 }
