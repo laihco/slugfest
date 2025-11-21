@@ -24,12 +24,19 @@ export class Scene3_MilkToss {
   meterFillElement: HTMLDivElement | null = null;
   meterValue = 0;
 
+  // Balls-left UI
+  ballsLeftElement: HTMLDivElement | null = null;
+
   // Throwing
   charging = false;
   balls: THREE.Mesh[] = [];
   bottles: THREE.Object3D[] = [];
 
-  // Win condition
+  // Attempts
+  private maxBalls = 4;
+  private ballsThrown = 0;
+
+  // Game state
   private hasWon = false;
   private onWin: () => void; // no longer optional
 
@@ -97,7 +104,7 @@ export class Scene3_MilkToss {
     });
 
     // UI
-    this.showUI();
+    //this.showUI();
 
     // Mouse events
     this.renderer.domElement.addEventListener(
@@ -112,7 +119,8 @@ export class Scene3_MilkToss {
 
   // Win conditions
   private handleWin() {
-    if (this.hasWon) return;
+    if (this.gameOver) return;
+    this.gameOver = true;
     this.hasWon = true;
     console.log("[MilkToss] WIN triggered");
 
@@ -124,47 +132,25 @@ export class Scene3_MilkToss {
       const dir = new THREE.Vector3();
       this.camera.getWorldDirection(dir);
 
-      // 1.5 units in front of camera
       this.prizeFox.position
         .copy(this.camera.position)
         .add(dir.multiplyScalar(1.5));
 
-      // Nudge it up a bit so it sits above the text
       this.prizeFox.position.y += 0.6;
-
-      // Make it face the camera (nice front view)
       this.prizeFox.lookAt(this.camera.position);
       this.prizeFox.visible = true;
     }
 
-    // Add keyframes for text pop
-    const style = document.createElement("style");
-    style.textContent = `
-      @keyframes win-pop-forward {
-        0% {
-          transform: translate3d(0, 0, -200px) scale(0.4) rotateX(15deg);
-          opacity: 0;
-        }
-        60% {
-          transform: translate3d(0, 0, 40px) scale(1.25) rotateX(0deg);
-          opacity: 1;
-        }
-        100% {
-          transform: translate3d(0, 0, 0) scale(1.1) rotateX(0deg);
-          opacity: 1;
-        }
-      }
-    `;
-    document.head.appendChild(style);
+    this.injectWinLoseKeyframes();
 
     const winOverlay = document.createElement("div");
-    winOverlay.id = "win-overlay";
+    winOverlay.id = "result-overlay";
     winOverlay.style.position = "absolute";
     winOverlay.style.inset = "0";
     winOverlay.style.display = "flex";
     winOverlay.style.alignItems = "center";
     winOverlay.style.justifyContent = "center";
-    winOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)"; // no gradient
+    winOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
     winOverlay.style.zIndex = "9999";
 
     const container = document.createElement("div");
@@ -185,7 +171,7 @@ export class Scene3_MilkToss {
     text.style.boxShadow = "0 0 25px rgba(0,0,0,0.8)";
     text.style.transformOrigin = "center";
     text.style.animation =
-      "win-pop-forward 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards";
+      "result-pop-forward 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards";
 
     container.appendChild(text);
     winOverlay.appendChild(container);
@@ -223,14 +209,13 @@ export class Scene3_MilkToss {
       [0, 0.75 + 0.65 + 0.65, 0], // top
     ];
 
-    // Define supports for top bottles
     const supportsMap = [
-      [], // 0 bottom
-      [], // 1 bottom
-      [], // 2 bottom
-      [0, 1], // 3 middle
-      [1, 2], // 4 middle
-      [3, 4], // 5 top
+      [],
+      [],
+      [],
+      [0, 1],
+      [1, 2],
+      [3, 4],
     ];
 
     pyramidOffsets.forEach((offset, index) => {
@@ -285,6 +270,21 @@ export class Scene3_MilkToss {
       this.meterFillElement.style.backgroundColor = "lime";
       this.meterElement.appendChild(this.meterFillElement);
     }
+
+    if (!this.ballsLeftElement) {
+      this.ballsLeftElement = document.createElement("div");
+      this.ballsLeftElement.style.position = "absolute";
+      this.ballsLeftElement.style.top = "20px";
+      this.ballsLeftElement.style.left = "50%";
+      this.ballsLeftElement.style.transform = "translateX(-50%)";
+      this.ballsLeftElement.style.color = "white";
+      this.ballsLeftElement.style.fontFamily = "sans-serif";
+      this.ballsLeftElement.style.fontSize = "20px";
+      this.ballsLeftElement.style.textShadow = "0 0 4px black";
+      document.body.appendChild(this.ballsLeftElement);
+    }
+
+    this.updateBallsUI();
   }
 
   // Hide UI
@@ -295,19 +295,24 @@ export class Scene3_MilkToss {
     if (this.meterElement && this.meterElement.parentElement) {
       this.meterElement.parentElement.removeChild(this.meterElement);
     }
+    if (this.ballsLeftElement && this.ballsLeftElement.parentElement) {
+      this.ballsLeftElement.parentElement.removeChild(this.ballsLeftElement);
+    }
     this.cursorElement = null;
     this.meterElement = null;
     this.meterFillElement = null;
+    this.ballsLeftElement = null;
   }
 
   // Start charging throw
   startCharging() {
+    if (this.gameOver) return;
     this.charging = true;
   }
 
   // Throw a ball based on charge
   throwBall() {
-    if (!this.charging) return;
+    if (!this.charging || this.gameOver) return;
 
     const minCharge = 0.05;
     if (this.meterValue < minCharge) {
@@ -335,6 +340,9 @@ export class Scene3_MilkToss {
 
     this.scene.add(ball);
     this.balls.push(ball);
+
+    this.ballsThrown++;
+    this.updateBallsUI();
 
     this.meterValue = 0;
     if (this.meterFillElement) this.meterFillElement.style.width = "0%";
@@ -382,7 +390,6 @@ export class Scene3_MilkToss {
     this.bottles.forEach((bottle) => {
       const data = bottle.userData as BottleData;
 
-      // Check supports
       if (!data.broken && data.supports && data.supports.length > 0) {
         const allBroken = data.supports.every((s) =>
           (s.userData as BottleData).broken
@@ -416,6 +423,15 @@ export class Scene3_MilkToss {
         return data.broken && bottle.position.y <= 0.11;
       });
       if (allDown) this.handleWin();
+    }
+
+    if (
+      !this.gameOver &&
+      this.ballsThrown >= this.maxBalls &&
+      this.balls.length === 0 &&
+      !allDown
+    ) {
+      this.handleLose();
     }
 
     // Spin prize fox while in win state
