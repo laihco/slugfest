@@ -2,6 +2,7 @@
   "version": "5",
   "specifiers": {
     "npm:three@0.172.0": "0.172.0",
+    "npm:three@~0.181.2": "0.181.2",
     "npm:vite@7": "7.2.2_picomatch@4.0.3"
   },
   "npm": {
@@ -351,6 +352,9 @@
     "three@0.172.0": {
       "integrity": "sha512-6HMgMlzU97MsV7D/tY8Va38b83kz8YJX+BefKjspMNAv0Vx6dxMogHOrnRl/sbMIs3BPUKijPqDqJ/+UwJbIow=="
     },
+    "three@0.181.2": {
+      "integrity": "sha512-k/CjiZ80bYss6Qs7/ex1TBlPD11whT9oKfT8oTGiHa34W4JRd1NiH/Tr1DbHWQ2/vMUypxksLnF2CfmlmM5XFQ=="
+    },
     "tinyglobby@0.2.15_picomatch@4.0.3": {
       "integrity": "sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==",
       "dependencies": [
@@ -391,6 +395,11 @@
     "dependencies": [
       "npm:three@0.172.0",
       "npm:vite@7"
-    ]
+    ],
+    "packageJson": {
+      "dependencies": [
+        "npm:three@~0.181.2"
+      ]
+    }
   }
 }
