@@ -10,19 +10,25 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
 
+// --- helper to create a fresh MilkToss scene ---
+function createMilkTossScene(): Scene3_MilkToss {
+  return new Scene3_MilkToss(renderer, () => {
+    // called when can-toss is won or lost
+    const hub = scenes[1] as Scene1_MainHub;
+    hub.resetPlayerPosition();
+    switchScene(1);
+  });
+}
+
 // Scenes
 const scenes: Record<number, GameScene> = {
   1: new Scene1_MainHub(renderer),
   2: new Scene2_Watergun(renderer),
-  3: new Scene3_MilkToss(renderer, () => {
-    // called when can-toss is won
-    const hub = scenes[1] as Scene1_MainHub;
-    hub.resetPlayerPosition();
-    switchScene(1);
-  }),
+  3: createMilkTossScene(),
 };
 
 let currentScene: GameScene = scenes[1];
+
 
 // Make sure all scenes start with their UI hidden
 Object.values(scenes).forEach((scene) => {
@@ -40,6 +46,26 @@ function hasUI(
 }
 
 export function switchScene(id: number) {
+  // Always recreate Milk Toss so it starts fresh
+  if (id === 3) {
+    // hide UI for old scene
+    if (hasUI(currentScene) && currentScene.hideUI) {
+      currentScene.hideUI();
+    }
+
+    const freshMilkToss = createMilkTossScene();
+    scenes[3] = freshMilkToss;
+    currentScene = freshMilkToss;
+
+    // show UI for the new MilkToss instance
+    if (hasUI(currentScene) && currentScene.showUI) {
+      currentScene.showUI();
+    }
+
+    console.log("Switched to scene", id, "(fresh instance)");
+    return;
+  }
+
   const next = scenes[id];
   if (!next) {
     console.warn("Scene", id, "does not exist");
@@ -53,13 +79,14 @@ export function switchScene(id: number) {
 
   currentScene = next;
 
-  // show UI for new scene (Scene3_MilkToss has showUI)
+  // show UI for new scene (if it has any)
   if (hasUI(currentScene) && currentScene.showUI) {
     currentScene.showUI();
   }
 
   console.log("Switched to scene", id);
 }
+
 
 // Keyboard switching
 addEventListener("keydown", (e) => {
