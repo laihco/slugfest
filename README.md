@@ -97,7 +97,7 @@ Ananya
 
 7. Our codebase containes berfore-commit automation via linting and auto formatting. Within our deno.json for linting we have lint config and lint task. For auto formatting our deno.json contains formatting settings and tasks. We also have some typechecking and build checks within our deno.json, as it defines check and ci tasks.
 
-8. As some post-push automation that helps developers our project contains automatic packaging and deployment to GitHub pages, we also have the automatic download of deno so anyone who opens the code with automatically be able to use deno commands within codespaces.
+8. As some post-push automation that helps developers our project contains automatic packaging and deployment to GitHub pages however, it is currently experiencing some technical difficulties. There is a current problem with our code packages we are still trying to fix as THREE.js is struggling with being in TypeScript. On the other end we also have the automatic download of deno so anyone who opens the code with automatically be able to use deno commands within codespaces.
 
 ## F1 Reflection
 
