@@ -59,8 +59,6 @@ Ananya
 
   - Created and adjusting custom materials for the Water Gun Stand, including shading, glossy plastic surfaces, and water tank transparency. Experimented with Blender's material nodes to get a readable look that still works well once exported to Three.js.
 
-Investigated scene-to-scene state persistence so players can return to the hub with updated prize counts.
-
 11/20/2025
 
 Melissa
@@ -75,10 +73,19 @@ Melissa
 
 Ananya
 
-- Working on implementing win/lose conditions
-  - game start/stop states
-  - checking win thresholds
-  - returning the player to the main hub
+- Implemented full win and lose conditions for the Milk Toss game, including game start/stop flow and bottle-down checks.
+
+- Added scene transitions back to the MainHub after the player wins or runs out of balls.
+
+- Fixed the issue where the Milk Toss UI was visible in the MainHub
+
+- Set up full game resets on every new entry into the tent, restoring ball count, bottle states, and clearing any remaining objects from previous attempts.
+
+- Debugged scene transition issues and cleaned up leftover state between plays.
+
+- Worked through commit issues, deployment errors, and general cleanup for the build.
+
+- F1 video submission
 
 ## F1 Requirements
 
@@ -109,6 +116,10 @@ Matthew Kin
 
 - During the production of this project, we often helped each other across different roles, collaborating on tasks outside our primary responsibilities. One of the biggest learning points for me was figuring out how to translate traditional game mechanics into Three.js. Because Three.js doesn’t provide built-in physics, I had to code behaviors manually, including force application, projectile motion, and object interactions. This process gave me a greater appreciation for how engines like Unity handle these systems behind the scenes and pushed me to think carefully about optimization and player control in a 3D space.
 
+Ananya Setty
+
+- During this first week, we all ended up taking on a lot of different responsibilities, especially as we built out more of the game systems and added new features. I spent my time fixing scene transitions, solving UI issues, organizing our tools, and making sure the game reset correctly every time the player entered a minigame. I also worked in Blender creating the Water Gun Stand and experimented with shaders and materials so it would look good once imported into Three.js. I also dealt with some commit cleanup and deployment issues that came up as we pushed updates, which hopefully will help keep the project more stable and reliable in teh future. 
+- 
 ## Introducing the team
 
 Either organizing by person or by role, tell us who will do what on your team. Your team should span at least the following four roles:
