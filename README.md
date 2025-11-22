@@ -91,7 +91,7 @@ Ananya
 
 5. The players control over the simulation is within there aim, and strength of the ball throw, if the player doesnt aim correctly then they will fail to knock all the bottles down. Moreover, if they do not hold down left click for long, the balls strength and distance will not travel enough to hit the bottles. However, if they take care of there aim and there control over how fair and the strength of the ball throw, they can succedd at the puzzle.
 
-6. If the player knocks down all the bottles then the game will send you to a you win scene. If the player runs out of balls then it will take the player to a you use screen. Both of which will contain a button that will take you back to the main hub to try again.
+6. If the player knocks down all the bottles then the game will send you to a you win scene. If the player runs out of balls then it will take the player to a you lose screen. Both of which will take you back to the main hub to try again.
 
 7. Our codebase containes berfore-commit automation via linting and auto formatting. Within our deno.json for linting we have lint config and lint task. For auto formatting our deno.json contains formatting settings and tasks. We also have some typechecking and build checks within our deno.json, as it defines check and ci tasks.
 
