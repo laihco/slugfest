@@ -1,25 +1,25 @@
 {
-  "hash": "e776ca2f",
-  "configHash": "f675abb6",
+  "hash": "366d4551",
+  "configHash": "2adce57a",
   "lockfileHash": "e3b0c442",
-  "browserHash": "0a230dab",
+  "browserHash": "b14733fb",
   "optimized": {
     "three": {
       "src": "../../node_modules/.deno/three@0.172.0/node_modules/three/build/three.module.js",
       "file": "three.js",
-      "fileHash": "b71af935",
+      "fileHash": "581d6543",
       "needsInterop": false
     },
     "three/examples/jsm/controls/PointerLockControls.js": {
       "src": "../../node_modules/.deno/three@0.172.0/node_modules/three/examples/jsm/controls/PointerLockControls.js",
       "file": "three_examples_jsm_controls_PointerLockControls__js.js",
-      "fileHash": "b8b0586d",
+      "fileHash": "07729c34",
       "needsInterop": false
     },
     "three/examples/jsm/loaders/GLTFLoader.js": {
       "src": "../../node_modules/.deno/three@0.172.0/node_modules/three/examples/jsm/loaders/GLTFLoader.js",
       "file": "three_examples_jsm_loaders_GLTFLoader__js.js",
-      "fileHash": "0280796b",
+      "fileHash": "1d86b843",
       "needsInterop": false
     }
   },

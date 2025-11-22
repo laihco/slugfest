@@ -41,6 +41,8 @@ Matthew
 
 - Created models for bottles and player in Blender
 
+- Created main hub
+
 - Ball Toss Functional with UI
 
 - Bottle Toss game completed with working physics
@@ -99,9 +101,13 @@ Ananya
 
 ## F1 Reflection
 
-Melissa 
+Melissa
 
 - As we started this project a lot of us branched out from our roles and all helped each other and each task like we are all every roll. We all did 3D modeling brainstromed game ideas together and came up with a plan. We also all committed to making dev logs full and accurate which has really helped all of us comprehend what is happening and what has been done.
+
+Matthew Kin
+
+- During the production of this project, we often helped each other across different roles, collaborating on tasks outside our primary responsibilities. One of the biggest learning points for me was figuring out how to translate traditional game mechanics into Three.js. Because Three.js doesn’t provide built-in physics, I had to code behaviors manually, including force application, projectile motion, and object interactions. This process gave me a greater appreciation for how engines like Unity handle these systems behind the scenes and pushed me to think carefully about optimization and player control in a 3D space.
 
 ## Introducing the team
 
