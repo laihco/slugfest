@@ -1,11 +1,11 @@
 // Keep first import style for THREE
 import * as THREE from "three";
 // deno-lint-ignore no-sloppy-imports
-import { Scene1_MainHub } from "./Scene1_MainHub";
+import { Scene1_MainHub } from "./Scene1_MainHub.js";
 // deno-lint-ignore no-sloppy-imports
-import { Scene2_Watergun } from "./Scene2_Watergun";
+import { Scene2_Watergun } from "./Scene2_Watergun.js";
 // deno-lint-ignore no-sloppy-imports
-import { Scene3_MilkToss } from "./Scene3_MilkToss";
+import { Scene3_MilkToss } from "./Scene3_MilkToss.js";
 // Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(innerWidth, innerHeight);
