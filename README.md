@@ -57,8 +57,6 @@ Ananya
 
   - Created and adjusting custom materials for the Water Gun Stand, including shading, glossy plastic surfaces, and water tank transparency. Experimented with Blender's material nodes to get a readable look that still works well once exported to Three.js.
 
-Investigated scene-to-scene state persistence so players can return to the hub with updated prize counts.
-
 11/20/2025
 
 Melissa
@@ -73,10 +71,20 @@ Melissa
 
 Ananya
 
-- Working on implementing win/lose conditions
-  - game start/stop states
-  - checking win thresholds
-  - returning the player to the main hub
+- Implemented full win and lose conditions for the Milk Toss game, including game start/stop flow and bottle-down checks.
+
+- Added scene transitions back to the MainHub after the player wins or runs out of balls.
+
+- Fixed the issue where the Milk Toss UI was visible in the MainHub
+
+- Set up full game resets on every new entry into the tent, restoring ball count, bottle states, and clearing any remaining objects from previous attempts.
+
+- Debugged scene transition issues and cleaned up leftover state between plays.
+
+- Worked through commit issues, deployment errors, and general cleanup for the build.
+
+- F1 video submission
+
 
 ## F1 Requirements
 
