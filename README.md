@@ -97,6 +97,12 @@ Ananya
 
 8. As some post-push automation that helps developers our project contains automatic packaging and deployment to GitHub pages, we also have the automatic download of deno so anyone who opens the code with automatically be able to use deno commands within codespaces.
 
+## F1 Reflection
+
+Melissa 
+
+- As we started this project a lot of us branched out from our roles and all helped each other and each task like we are all every roll. We all did 3D modeling brainstromed game ideas together and came up with a plan. We also all committed to making dev logs full and accurate which has really helped all of us comprehend what is happening and what has been done.
+
 ## Introducing the team
 
 Either organizing by person or by role, tell us who will do what on your team. Your team should span at least the following four roles:
