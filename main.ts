@@ -3,6 +3,7 @@ import * as THREE from "https://esm.sh/three@0.172.0";
 import { Scene1_MainHub } from "./Scene1_MainHub.ts";
 import { Scene2_Watergun } from "./Scene2_Watergun.ts";
 import { Scene3_MilkToss } from "./Scene3_MilkToss.ts";
+import { Scene4_DuckPond } from "./Scene4_DuckPond.ts";
 import { GameScene } from "./SceneInterface.ts";
 
 // Renderer
@@ -23,6 +24,7 @@ const scenes: Record<number, GameScene> = {
   1: new Scene1_MainHub(renderer),
   2: new Scene2_Watergun(renderer),
   3: createMilkTossScene(),
+  4: new Scene4_DuckPond(renderer),
 };
 
 let currentScene: GameScene = scenes[1];
@@ -86,7 +88,7 @@ export function switchScene(id: number) {
 
 // Keyboard switching
 addEventListener("keydown", (e) => {
-  if (["1", "2", "3"].includes(e.key)) {
+  if (["1", "2", "3", "4"].includes(e.key)) {
     switchScene(Number(e.key));
   }
 });
