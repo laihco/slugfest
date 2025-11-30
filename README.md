@@ -87,6 +87,10 @@ Ananya
 
 - F1 video submission
 
+11/29
+
+- Created inventory.ts
+
 ## F1 Requirements
 
 1. The platform we decided to use is TypeScript which does not already provide support for 3D rendering and physics simulation. TypeScript is our primary langauyge and framework for this project with calls to THREE.js for all of our 3D rendering.
@@ -118,8 +122,8 @@ Matthew Kin
 
 Ananya Setty
 
-- During this first week, we all ended up taking on a lot of different responsibilities, especially as we built out more of the game systems and added new features. I spent my time fixing scene transitions, solving UI issues, organizing our tools, and making sure the game reset correctly every time the player entered a minigame. I also worked in Blender creating the Water Gun Stand and experimented with shaders and materials so it would look good once imported into Three.js. I also dealt with some commit cleanup and deployment issues that came up as we pushed updates, which hopefully will help keep the project more stable and reliable in teh future. 
-- 
+- During this first week, we all ended up taking on a lot of different responsibilities, especially as we built out more of the game systems and added new features. I spent my time fixing scene transitions, solving UI issues, organizing our tools, and making sure the game reset correctly every time the player entered a minigame. I also worked in Blender creating the Water Gun Stand and experimented with shaders and materials so it would look good once imported into Three.js. I also dealt with some commit cleanup and deployment issues that came up as we pushed updates, which hopefully will help keep the project more stable and reliable in teh future.
+
 ## Introducing the team
 
 Either organizing by person or by role, tell us who will do what on your team. Your team should span at least the following four roles:
