@@ -15,6 +15,7 @@ export class Scene4_DuckPond {
   // Ducks
   private ducks: THREE.Object3D[] = [];
   private duckColliders: THREE.Object3D[] = [];
+  private duckCount = 0;
 
   private ringCount = 3;
 
@@ -285,6 +286,7 @@ export class Scene4_DuckPond {
       node = node.parent as THREE.Object3D | null;
     }
     if (!duck) return;
+    this.duckCount++;
 
     const ringIndex = (duck.userData.ringIndex as number | undefined) ?? 1;
     this.lastPickedRingIndex = ringIndex;
@@ -372,6 +374,36 @@ export class Scene4_DuckPond {
     }, 2000);
   }
 
+  private handleLose() {
+    if (this.gameOver) return;
+    this.gameOver = true;
+    console.log("[DuckPond] LOSE triggered");
+
+    this.hideUI();
+    this.controls.unlock();
+
+    this.injectWinLoseKeyframes();
+
+    const loseOverlay = document.createElement("div");
+    loseOverlay.classList.add("result-overlay");
+
+    const container = document.createElement("div");
+    container.classList.add("container");
+
+    const text = document.createElement("div");
+    text.textContent = "YOU LOSE!";
+    text.classList.add("loseText");
+
+    container.appendChild(text);
+    loseOverlay.appendChild(container);
+    document.body.appendChild(loseOverlay);
+
+    setTimeout(() => {
+      loseOverlay.remove();
+      this.onDone(); // use same callback to return to hub
+    }, 2000);
+  }
+
   private injectWinLoseKeyframes() {
     if (document.getElementById("result-pop-style")) return;
     const style = document.createElement("style");
@@ -403,7 +435,7 @@ export class Scene4_DuckPond {
     const message = this.getPrizeMessage();
     this.lastPrizeWasBig = message === "you won the big prize!";
 
-    if (this.lastPrizeWasBig) {
+    if (this.lastPrizeWasBig || this.duckCount >= 3) {
       return;
     }
 
@@ -484,6 +516,8 @@ export class Scene4_DuckPond {
     //------ Check the Win and Lose Condition -------
     if (this.lastPrizeWasBig) {
       this.handleWin();
+    } else if (this.duckCount >= 3) {
+      this.handleLose();
     }
 
     // Spin prize fox while visible (big prize only)
