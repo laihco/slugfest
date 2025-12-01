@@ -93,6 +93,18 @@ Ananya
 
 - Created inventory.ts
 
+11/30/2025
+
+Melissa 
+
+- Added a new tent model for the Duck Pond game
+
+- Created a square that will teleport you to the game when you stand on it
+
+- Created a Style.css for style code and added some of the win/lose condition style text
+
+- Added a win and lose condition for the Duck Pond game
+
 ## F1 Requirements
 
 1. The platform we decided to use is TypeScript which does not already provide support for 3D rendering and physics simulation. TypeScript is our primary langauyge and framework for this project with calls to THREE.js for all of our 3D rendering.
