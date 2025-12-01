@@ -9,6 +9,9 @@ export class Scene4_DuckPond {
   renderer: THREE.WebGLRenderer;
   controls: PointerLockControls;
 
+  // Game state
+  private gameOver = false;
+
   // Ducks
   private ducks: THREE.Object3D[] = [];
   private duckColliders: THREE.Object3D[] = [];
@@ -323,6 +326,75 @@ export class Scene4_DuckPond {
     return "aw no prize";
   }
 
+  //handle the win condition
+  private handleWin() {
+    if (this.gameOver) return;
+    this.gameOver = true;
+    console.log("[DuckPond] WIN triggered");
+
+    this.hideUI();
+    this.controls.unlock();
+
+    // Position fox in front of camera, above the text
+    if (this.prizeFox) {
+      const dir = new THREE.Vector3();
+      this.camera.getWorldDirection(dir);
+
+      this.prizeFox.position
+        .copy(this.camera.position)
+        .add(dir.multiplyScalar(1.5));
+
+      this.prizeFox.position.y += 0.4;
+      this.prizeFox.lookAt(this.camera.position);
+      this.prizeFox.visible = true;
+    }
+
+    this.injectWinLoseKeyframes();
+
+    const winOverlay = document.createElement("div");
+    winOverlay.classList.add("result-overlay");
+
+    const container = document.createElement("div");
+    container.classList.add("container");
+
+    const text = document.createElement("div");
+    text.textContent = "You Won the Big Prize!";
+    text.classList.add("winText");
+
+    container.appendChild(text);
+    winOverlay.appendChild(container);
+    document.body.appendChild(winOverlay);
+
+    setTimeout(() => {
+      winOverlay.remove();
+      if (this.prizeFox) this.prizeFox.visible = false;
+      this.onDone(); // safe now, non-optional
+    }, 2000);
+  }
+
+  private injectWinLoseKeyframes() {
+    if (document.getElementById("result-pop-style")) return;
+    const style = document.createElement("style");
+    style.id = "result-pop-style";
+    style.textContent = `
+      @keyframes result-pop-forward {
+        0% {
+          transform: translate3d(0, 0, -200px) scale(0.4) rotateX(15deg);
+          opacity: 0;
+        }
+        60% {
+          transform: translate3d(0, 0, 40px) scale(1.25) rotateX(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translate3d(0, 0, 0) scale(1.1) rotateX(0deg);
+          opacity: 1;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   private showResultOverlay() {
     this.showingOverlay = true;
     this.hideUI();
@@ -331,17 +403,8 @@ export class Scene4_DuckPond {
     const message = this.getPrizeMessage();
     this.lastPrizeWasBig = message === "you won the big prize!";
 
-    // If big prize, position prize fox like in Milk Toss
-    if (this.lastPrizeWasBig && this.prizeFox) {
-      const dir = new THREE.Vector3();
-      this.camera.getWorldDirection(dir);
-
-      this.prizeFox.position
-        .copy(this.camera.position)
-        .add(dir.multiplyScalar(1.5));
-      this.prizeFox.position.y += 0.6;
-      this.prizeFox.lookAt(this.camera.position);
-      this.prizeFox.visible = true;
+    if (this.lastPrizeWasBig) {
+      return;
     }
 
     const overlay = document.createElement("div");
@@ -374,10 +437,6 @@ export class Scene4_DuckPond {
     const closeOverlay = () => {
       overlay.remove();
       this.showingOverlay = false;
-
-      if (this.lastPrizeWasBig && this.prizeFox) {
-        this.prizeFox.visible = false;
-      }
 
       if (this.ducks.length === 0) {
         this.onDone();
@@ -422,8 +481,16 @@ export class Scene4_DuckPond {
       this.updatePickupAnimation(now);
     }
 
+    //------ Check the Win and Lose Condition -------
+    if (this.lastPrizeWasBig) {
+      this.handleWin();
+    }
+
     // Spin prize fox while visible (big prize only)
-    if (this.lastPrizeWasBig && this.prizeFox && this.prizeFox.visible) {
+    if (
+      this.gameOver && this.lastPrizeWasBig && this.prizeFox &&
+      this.prizeFox.visible
+    ) {
       this.prizeFox.rotation.y += 2 * delta;
     }
 

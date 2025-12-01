@@ -19,12 +19,20 @@ function createMilkTossScene(): Scene3_MilkToss {
   });
 }
 
+function createDuckPondScene(): Scene4_DuckPond {
+  return new Scene4_DuckPond(renderer, () => {
+    const hub = scenes[1] as Scene1_MainHub;
+    hub.resetPlayerPosition();
+    switchScene(1);
+  });
+}
+
 // Scenes
 const scenes: Record<number, GameScene> = {
   1: new Scene1_MainHub(renderer),
   2: new Scene2_Watergun(renderer),
   3: createMilkTossScene(),
-  4: new Scene4_DuckPond(renderer),
+  4: createDuckPondScene(),
 };
 
 let currentScene: GameScene = scenes[1];
@@ -55,6 +63,25 @@ export function switchScene(id: number) {
     const freshMilkToss = createMilkTossScene();
     scenes[3] = freshMilkToss;
     currentScene = freshMilkToss;
+
+    // show UI for the new MilkToss instance
+    if (hasUI(currentScene) && currentScene.showUI) {
+      currentScene.showUI();
+    }
+
+    console.log("Switched to scene", id, "(fresh instance)");
+    return;
+  }
+
+  if (id === 4) {
+    // hide UI for old scene
+    if (hasUI(currentScene) && currentScene.hideUI) {
+      currentScene.hideUI();
+    }
+
+    const freshDuckPond = createDuckPondScene();
+    scenes[4] = freshDuckPond;
+    currentScene = freshDuckPond;
 
     // show UI for the new MilkToss instance
     if (hasUI(currentScene) && currentScene.showUI) {

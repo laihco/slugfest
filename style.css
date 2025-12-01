@@ -1,0 +1,42 @@
+.result-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+}
+
+.container {
+  perspective: 800px;
+  transform-style: preserve-3d;
+}
+
+.winText {
+  font-family: "Impact", "Arial Black", system-ui;
+  font-size: 80px;
+  padding: 16px 40px;
+  color: #ffdd00;
+  letter-spacing: 6px;
+  text-shadow: 0 0 8px #000, 4px 4px 0 #a00000, -2px -2px 0 #a00000;
+  border-radius: 10px;
+  border: 4px solid #a00000;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
+  transform-origin: center;
+  animation: result-pop-forward 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.loseText {
+  font-family: "Impact", "Arial Black", system-ui;
+  font-size: 80px;
+  padding: 16px 40px;
+  color: #ff5555;
+  letter-spacing: 6px;
+  text-shadow: 0 0 8px #000, 4px 4px 0 #5a0000, -2px -2px 0 #5a0000;
+  border-radius: 10px;
+  border: 4px solid #5a0000;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
+  transform-origin: center;
+  animation: result-pop-forward 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

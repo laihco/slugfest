@@ -156,34 +156,14 @@ export class Scene3_MilkToss {
     this.injectWinLoseKeyframes();
 
     const winOverlay = document.createElement("div");
-    winOverlay.id = "result-overlay";
-    winOverlay.style.position = "absolute";
-    winOverlay.style.inset = "0";
-    winOverlay.style.display = "flex";
-    winOverlay.style.alignItems = "center";
-    winOverlay.style.justifyContent = "center";
-    winOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
-    winOverlay.style.zIndex = "9999";
+    winOverlay.classList.add("result-overlay");
 
     const container = document.createElement("div");
-    container.style.perspective = "800px";
-    container.style.transformStyle = "preserve-3d";
+    container.classList.add("container");
 
     const text = document.createElement("div");
     text.textContent = "YOU WIN!";
-    text.style.fontFamily = `"Impact", "Arial Black", system-ui`;
-    text.style.fontSize = "80px";
-    text.style.padding = "16px 40px";
-    text.style.color = "#ffdd00";
-    text.style.letterSpacing = "6px";
-    text.style.textShadow =
-      "0 0 8px #000, 4px 4px 0 #a00000, -2px -2px 0 #a00000";
-    text.style.borderRadius = "10px";
-    text.style.border = "4px solid #a00000";
-    text.style.boxShadow = "0 0 25px rgba(0,0,0,0.8)";
-    text.style.transformOrigin = "center";
-    text.style.animation =
-      "result-pop-forward 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards";
+    text.classList.add("winText");
 
     container.appendChild(text);
     winOverlay.appendChild(container);
@@ -208,34 +188,14 @@ export class Scene3_MilkToss {
     this.injectWinLoseKeyframes();
 
     const loseOverlay = document.createElement("div");
-    loseOverlay.id = "result-overlay";
-    loseOverlay.style.position = "absolute";
-    loseOverlay.style.inset = "0";
-    loseOverlay.style.display = "flex";
-    loseOverlay.style.alignItems = "center";
-    loseOverlay.style.justifyContent = "center";
-    loseOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
-    loseOverlay.style.zIndex = "9999";
+    loseOverlay.classList.add("result-overlay");
 
     const container = document.createElement("div");
-    container.style.perspective = "800px";
-    container.style.transformStyle = "preserve-3d";
+    container.classList.add("container");
 
     const text = document.createElement("div");
     text.textContent = "YOU LOSE!";
-    text.style.fontFamily = `"Impact", "Arial Black", system-ui`;
-    text.style.fontSize = "80px";
-    text.style.padding = "16px 40px";
-    text.style.color = "#ff5555";
-    text.style.letterSpacing = "6px";
-    text.style.textShadow =
-      "0 0 8px #000, 4px 4px 0 #5a0000, -2px -2px 0 #5a0000";
-    text.style.borderRadius = "10px";
-    text.style.border = "4px solid #5a0000";
-    text.style.boxShadow = "0 0 25px rgba(0,0,0,0.8)";
-    text.style.transformOrigin = "center";
-    text.style.animation =
-      "result-pop-forward 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards";
+    text.classList.add("loseText");
 
     container.appendChild(text);
     loseOverlay.appendChild(container);

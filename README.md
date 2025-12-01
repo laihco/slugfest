@@ -69,6 +69,8 @@ Melissa
 
 - Added collision with tent so player cannot phase through it
 
+- F1 Requirnments
+
 11/21/2025
 
 Ananya
