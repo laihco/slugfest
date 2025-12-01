@@ -31,16 +31,24 @@ export class Scene1_MainHub {
   cameraLerpSpeed = 0.1;
 
   //Scene Transition Cubes
-  scene3CubePosition = new THREE.Vector3(-10, 0.1, -8);
   cubeSize = 2;
+
+  scene3CubePosition = new THREE.Vector3(-10, 0.1, -8);
   cube3Mesh: THREE.Mesh;
+
+  scene4CubePosition = new THREE.Vector3(7, 0.1, -8);
+  cube4Mesh: THREE.Mesh;
 
   //Carnival Tents
   milkTossTentPosition = new THREE.Vector3(-10, 1, -15);
+  milkTossTent: THREE.Object3D;
+
+  duckPondPosition = new THREE.Vector3(7, 1, -15);
+  duckPondTent: THREE.Object3D;
+
   tentRotationX = Math.PI;
   tentScale = 3;
   tentRadius = 2.4;
-  milkTossTent: THREE.Object3D;
 
   constructor(renderer: THREE.WebGLRenderer) {
     this.renderer = renderer;
@@ -96,10 +104,14 @@ export class Scene1_MainHub {
       this.cubeSize,
       this.cubeSize,
     );
-    const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xFF0000 });
+    const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x90EE90 });
     this.cube3Mesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
     this.cube3Mesh.position.copy(this.scene3CubePosition);
     this.scene.add(this.cube3Mesh);
+
+    this.cube4Mesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    this.cube4Mesh.position.copy(this.scene4CubePosition);
+    this.scene.add(this.cube4Mesh);
 
     //Game Tents
     this.milkTossTent = new THREE.Object3D();
@@ -110,6 +122,17 @@ export class Scene1_MainHub {
     this.loadGLBModel(
       "/assets/models/milkTent.glb",
       this.milkTossTent,
+      this.tentScale,
+    );
+
+    this.duckPondTent = new THREE.Object3D();
+    this.duckPondTent.position.copy(this.duckPondPosition);
+    this.duckPondTent.rotation.x = this.tentRotationX;
+    this.scene.add(this.duckPondTent);
+
+    this.loadGLBModel(
+      "/assets/models/duckTent.glb",
+      this.duckPondTent,
       this.tentScale,
     );
   }
@@ -210,6 +233,15 @@ export class Scene1_MainHub {
         this.cubeSize / 2
     ) {
       MAIN.switchScene(3);
+    }
+
+    if (
+      Math.abs(this.player.position.x - this.cube4Mesh.position.x) <
+        this.cubeSize / 2 &&
+      Math.abs(this.player.position.z - this.cube4Mesh.position.z) <
+        this.cubeSize / 2
+    ) {
+      MAIN.switchScene(4);
     }
   }
 
