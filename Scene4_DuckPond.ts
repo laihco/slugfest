@@ -157,6 +157,14 @@ export class Scene4_DuckPond {
       this.scene.add(model);
     });
 
+    //load tent
+    this.loadModel("/assets/models/duckTent.glb", (model) => {
+      model.position.copy(rim.position);
+      model.rotation.x = Math.PI;
+      model.scale.setScalar(5);
+      this.scene.add(model);
+    });
+
     // UI (crosshair only, no timing bar)
     this.showUI();
   }
