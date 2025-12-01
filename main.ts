@@ -5,6 +5,27 @@ import { Scene2_Watergun } from "./Scene2_Watergun.ts";
 import { Scene3_MilkToss } from "./Scene3_MilkToss.ts";
 import { Scene4_DuckPond } from "./Scene4_DuckPond.ts";
 import { GameScene } from "./SceneInterface.ts";
+import { inventory } from "./inventory.ts";
+
+// Grab UI elements
+const invList = document.getElementById("inventory-list")!;
+
+function updateInventoryUI() {
+  const items = inventory.getItems();
+  invList.innerHTML = "";
+
+  for (const item of items) {
+    const li = document.createElement("li");
+    li.textContent = `${item.name} x${item.quantity}`;
+    invList.appendChild(li);
+  }
+}
+
+// Register UI update listener
+inventory.onChange(updateInventoryUI);
+
+// Optional: populate UI immediately on load
+updateInventoryUI();
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
