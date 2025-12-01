@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { inventory } from "./inventory.ts";
 
 export class Scene4_DuckPond {
   scene: THREE.Scene;
@@ -336,6 +337,9 @@ export class Scene4_DuckPond {
 
     this.hideUI();
     this.controls.unlock();
+
+    // Give player duck plush
+    inventory.addItem("duck-plush", "Duck Plush", 1); // <-- ADD THIS LINE
 
     // Position fox in front of camera, above the text
     if (this.prizeFox) {
