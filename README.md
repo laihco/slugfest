@@ -154,6 +154,12 @@ Ananya Setty
 
 - During this first week, we all ended up taking on a lot of different responsibilities, especially as we built out more of the game systems and added new features. I spent my time fixing scene transitions, solving UI issues, organizing our tools, and making sure the game reset correctly every time the player entered a minigame. I also worked in Blender creating the Water Gun Stand and experimented with shaders and materials so it would look good once imported into Three.js. I also dealt with some commit cleanup and deployment issues that came up as we pushed updates, which hopefully will help keep the project more stable and reliable in teh future.
 
+## F2 Reflection
+
+Melissa
+
+- This time around we continued our collaboration and split up the work where we were each in charge of different task. While Ananya set up the level 2 and got the base code down, I went in and cleaned up and added the final touches such as the win and lose condition, and the little duckies for the duck pond. Matt then created the inventory system for our end game. A big learning point I had this time around was finding code smells and fixing them. Since scene 1 and 2 are very similiar in style I decided to make a style sheet to make the win conditions easier. Especially since I ended up taking code from scene one and tranfering it to scene two with minor changes and additions. 
+  
 ## Introducing the team
 
 Either organizing by person or by role, tell us who will do what on your team. Your team should span at least the following four roles:
