@@ -115,12 +115,6 @@ Matthew Kin
 
 - Added locked requirements to booths
 
-Melissa 
-
-- Created a 3D duck model
-
-- Implimented 3D duck model into Duck Pond game
-
 ## F1 Requirements
 
 1. The platform we decided to use is TypeScript which does not already provide support for 3D rendering and physics simulation. TypeScript is our primary langauyge and framework for this project with calls to THREE.js for all of our 3D rendering.
@@ -153,6 +147,28 @@ Matthew Kin
 Ananya Setty
 
 - During this first week, we all ended up taking on a lot of different responsibilities, especially as we built out more of the game systems and added new features. I spent my time fixing scene transitions, solving UI issues, organizing our tools, and making sure the game reset correctly every time the player entered a minigame. I also worked in Blender creating the Water Gun Stand and experimented with shaders and materials so it would look good once imported into Three.js. I also dealt with some commit cleanup and deployment issues that came up as we pushed updates, which hopefully will help keep the project more stable and reliable in teh future.
+
+## F2 Requirements
+
+1. The game continues to use the same physics system established in F1.
+
+2. The player can access two separate minigames—Milktoss and Duck Pond—by walking onto designated trigger boxes.
+
+3. In Duck Pond, the player can click on ducks to select them. In Milktoss, the player can hold to charge and throw balls.
+
+4. The inventory system can store stuffed animals across all scenes.
+
+5. Players can earn stuffed animals by winning the carnival minigames.
+
+6. Players can lose Milktoss by running out of balls, and they can lose Duck Pond by selecting the wrong duck.
+
+7. The player wins the overall game after collecting both unique plush prizes.
+
+## F2 Reflection
+
+Matthew Kin
+
+- Looking back on how we met the F2 requirements, our team’s plan has changed noticeably since our F1 devlog. One of the biggest realizations was how much more planning the inventory system needed than we originally expected. In F1, we assumed inventory would be a simple add-on, but once we started integrating multiple minigames and scene transitions, it became clear that the inventory had to persist across scenes, sync properly with game logic, and update immediately when the player won prizes. Setting this up required rethinking how our data was stored, how scenes communicated with each other, and how to keep everything consistent without breaking existing features.
 
 ## Introducing the team
 

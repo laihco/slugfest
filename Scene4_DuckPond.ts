@@ -338,6 +338,9 @@ export class Scene4_DuckPond {
     this.hideUI();
     this.controls.unlock();
 
+    // Give player duck plush
+    inventory.addItem("duck-plush", "Duck Plush", 1); // <-- ADD THIS LINE
+
     // Position Duck in front of camera, above the text
     if (this.prizeDuck) {
       const dir = new THREE.Vector3();
