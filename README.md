@@ -170,6 +170,9 @@ Matthew Kin
 
 - Looking back on how we met the F2 requirements, our team’s plan has changed noticeably since our F1 devlog. One of the biggest realizations was how much more planning the inventory system needed than we originally expected. In F1, we assumed inventory would be a simple add-on, but once we started integrating multiple minigames and scene transitions, it became clear that the inventory had to persist across scenes, sync properly with game logic, and update immediately when the player won prizes. Setting this up required rethinking how our data was stored, how scenes communicated with each other, and how to keep everything consistent without breaking existing features.
 
+Ananya Setty
+- For F2, most of my work centered around building out the Water Gun qand Duck Pond minigames and planning ahead in case the water mechanics didn’t reach a stable state in time. Early on, I spent a lot of time experimenting with approaches for the water system—testing different particle methods, raycasting ideas, and ways of creating gameplay targets that felt readable and satisfying. Because Three.js doesn’t come with physics or fluid simulation, a lot of this required trial and error. Building Duck Pond meant setting up a simpler interaction system based on selecting ducks. Overall, this week helped me think more strategically about scope and fallback plans.
+
 ## Introducing the team
 
 Either organizing by person or by role, tell us who will do what on your team. Your team should span at least the following four roles:
