@@ -55,8 +55,8 @@ export class Scene4_DuckPond {
   private showingOverlay = false;
   private lastPickedRingIndex: number | null = null;
 
-  // Prize fox (for big prize only)
-  private prizeFox: THREE.Object3D | null = null;
+  // Prize Duck (for big prize only)
+  private prizeDuck: THREE.Object3D | null = null;
   private lastPrizeWasBig = false;
 
   // Pond height / water level
@@ -154,11 +154,11 @@ export class Scene4_DuckPond {
     // Ducks (multiple rings)
     this.spawnDucks();
 
-    // Prize fox (for big prize result, like Milk Toss)
-    this.loadModel("/assets/models/fox_toy.glb", (model) => {
+    // Prize Duck (for big prize result, like Milk Toss)
+    this.loadModel("/assets/models/duck.glb", (model) => {
       model.visible = false;
-      model.scale.setScalar(0.6);
-      this.prizeFox = model;
+      model.scale.setScalar(0.1);
+      this.prizeDuck = model;
       this.scene.add(model);
     });
 
@@ -197,7 +197,7 @@ export class Scene4_DuckPond {
       for (let i = 0; i < count; i++) {
         const angle = (i / count) * Math.PI * 2;
 
-        this.loadModel("/assets/models/fox_toy.glb", (model) => {
+        this.loadModel("/assets/models/duck.glb", (model) => {
           model.traverse((child: THREE.Object3D) => {
             const mesh = child as THREE.Mesh;
             if (mesh.isMesh) {
@@ -206,7 +206,7 @@ export class Scene4_DuckPond {
             }
           });
 
-          model.scale.setScalar(1);
+          model.scale.setScalar(0.15);
           model.position.set(
             Math.cos(angle) * radiusX,
             this.waterY + 0.4,
@@ -338,21 +338,18 @@ export class Scene4_DuckPond {
     this.hideUI();
     this.controls.unlock();
 
-    // Give player duck plush
-    inventory.addItem("duck-plush", "Duck Plush", 1); // <-- ADD THIS LINE
-
-    // Position fox in front of camera, above the text
-    if (this.prizeFox) {
+    // Position Duck in front of camera, above the text
+    if (this.prizeDuck) {
       const dir = new THREE.Vector3();
       this.camera.getWorldDirection(dir);
 
-      this.prizeFox.position
+      this.prizeDuck.position
         .copy(this.camera.position)
         .add(dir.multiplyScalar(1.5));
 
-      this.prizeFox.position.y += 0.4;
-      this.prizeFox.lookAt(this.camera.position);
-      this.prizeFox.visible = true;
+      this.prizeDuck.position.y += 0.4;
+      this.prizeDuck.lookAt(this.camera.position);
+      this.prizeDuck.visible = true;
     }
 
     this.injectWinLoseKeyframes();
@@ -373,7 +370,7 @@ export class Scene4_DuckPond {
 
     setTimeout(() => {
       winOverlay.remove();
-      if (this.prizeFox) this.prizeFox.visible = false;
+      if (this.prizeDuck) this.prizeDuck.visible = false;
       this.onDone(); // safe now, non-optional
     }, 2000);
   }
@@ -524,12 +521,12 @@ export class Scene4_DuckPond {
       this.handleLose();
     }
 
-    // Spin prize fox while visible (big prize only)
+    // Spin prize Duck while visible (big prize only)
     if (
-      this.gameOver && this.lastPrizeWasBig && this.prizeFox &&
-      this.prizeFox.visible
+      this.gameOver && this.lastPrizeWasBig && this.prizeDuck &&
+      this.prizeDuck.visible
     ) {
-      this.prizeFox.rotation.y += 2 * delta;
+      this.prizeDuck.rotation.y += 2 * delta;
     }
 
     this.renderer.render(this.scene, this.camera);

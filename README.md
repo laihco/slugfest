@@ -115,6 +115,12 @@ Matthew Kin
 
 - Added locked requirements to booths
 
+Melissa 
+
+- Created a 3D duck model
+
+- Implimented 3D duck model into Duck Pond game
+
 ## F1 Requirements
 
 1. The platform we decided to use is TypeScript which does not already provide support for 3D rendering and physics simulation. TypeScript is our primary langauyge and framework for this project with calls to THREE.js for all of our 3D rendering.
