@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { inventory } from "./inventory.ts";
 
 interface BallData {
   velocity: THREE.Vector3;
@@ -135,6 +136,8 @@ export class Scene3_MilkToss {
     this.gameOver = true;
     this.hasWon = true;
     console.log("[MilkToss] WIN triggered");
+    // Add fox plush to inventory
+    inventory.addItem("fox-plush", "Fox Plush", 1);
 
     this.hideUI();
     this.controls.unlock();

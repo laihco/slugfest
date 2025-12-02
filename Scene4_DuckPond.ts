@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { inventory } from "./inventory.ts";
 
 export class Scene4_DuckPond {
   scene: THREE.Scene;

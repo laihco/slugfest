@@ -89,13 +89,15 @@ Ananya
 
 - F1 video submission
 
-11/29
+11/29/2025
 
-- Created inventory.ts
+Matthew Kin
+
+- Created inventory.ts and UI
 
 11/30/2025
 
-Melissa 
+Melissa
 
 - Added a new tent model for the Duck Pond game
 
@@ -106,6 +108,12 @@ Melissa
 - Added a win and lose condition for the Duck Pond game
 
 12/1/2025
+
+Matthew Kin
+
+- Added inventory updating
+
+- Added locked requirements to booths
 
 Melissa 
 

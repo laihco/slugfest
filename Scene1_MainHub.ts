@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
+import { inventory } from "./inventory.ts";
 import * as MAIN from "./main.ts";
 
 export class Scene1_MainHub {
@@ -241,7 +242,33 @@ export class Scene1_MainHub {
       Math.abs(this.player.position.z - this.cube4Mesh.position.z) <
         this.cubeSize / 2
     ) {
-      MAIN.switchScene(4);
+      // REQUIRE 1 FOX PLUSH TO ENTER DUCK POND
+      if (inventory.hasItem("fox-plush", 1)) {
+        MAIN.switchScene(4);
+      } else {
+        // Show popup
+        let overlay = document.getElementById("popup-overlay");
+        let box = document.getElementById("popup-box");
+
+        if (!overlay) {
+          overlay = document.createElement("div");
+          overlay.id = "popup-overlay";
+          overlay.className = "result-overlay";
+          overlay.style.display = "none";
+          box = document.createElement("div");
+          box.id = "popup-box";
+          box.className = "loseText";
+          overlay.appendChild(box);
+          document.body.appendChild(overlay);
+        }
+
+        box!.textContent = "You need a fox plush!";
+        overlay!.style.display = "flex";
+
+        setTimeout(() => {
+          overlay!.style.display = "none";
+        }, 1500);
+      }
     }
   }
 
