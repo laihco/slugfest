@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "https://esm.sh/three@0.172.0";
 
 import { Scene1_MainHub } from "./Scene1_MainHub.ts";
 import { Scene2_Watergun } from "./Scene2_Watergun.ts";
