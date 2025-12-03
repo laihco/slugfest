@@ -161,5 +161,6 @@ function animate() {
   last = now;
 
   currentScene.update(delta);
+  
 }
 animate();
