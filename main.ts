@@ -1,5 +1,6 @@
 import * as THREE from "https://esm.sh/three@0.172.0";
 
+import { initInputManager } from "./InputManager.ts";
 import { Scene1_MainHub } from "./Scene1_MainHub.ts";
 import { Scene2_Watergun } from "./Scene2_Watergun.ts";
 import { Scene3_MilkToss } from "./Scene3_MilkToss.ts";
@@ -18,6 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateInventoryUI() {
     const items = inventory.getItems();
+
+    if (!invList) return;
+
     invList.innerHTML = "";
 
     for (const item of items) {
@@ -27,9 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Register UI update listener
   inventory.onChange(updateInventoryUI);
-  // Optional: populate UI immediately on load
   updateInventoryUI();
 });
 
@@ -37,6 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
+// Initialize global input system (touch + mouse)
+initInputManager(renderer.domElement);
 
 function createMilkTossScene(): Scene3_MilkToss {
   return new Scene3_MilkToss(renderer, () => {

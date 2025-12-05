@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { getInputManager, PointerInfo } from "./InputManager.ts";
 import { inventory } from "./inventory.ts";
 
 interface BallData {
@@ -67,15 +68,16 @@ export class Scene3_MilkToss {
     );
     this.camera.position.set(0, 1.7, 0);
 
-    // Controls
+    // Controls (mouse look for desktop, ignored on touch)
     this.controls = new PointerLockControls(
       this.camera,
       this.renderer.domElement,
     );
-    this.renderer.domElement.addEventListener(
-      "click",
-      () => this.controls.lock(),
-    );
+
+    // Global touch + mouse input
+    const input = getInputManager();
+    input.onPointerDown((info) => this.handlePointerDown(info));
+    input.onPointerUp((info) => this.handlePointerUp(info));
 
     // Floor
     const floor = new THREE.Mesh(
@@ -117,16 +119,26 @@ export class Scene3_MilkToss {
       this.prizeFox = model;
       this.scene.add(model);
     });
+  }
 
-    // Mouse events
-    this.renderer.domElement.addEventListener(
-      "mousedown",
-      () => this.startCharging(),
-    );
-    this.renderer.domElement.addEventListener(
-      "mouseup",
-      () => this.throwBall(),
-    );
+  private handlePointerDown(info: PointerInfo) {
+    if (this.gameOver) return;
+
+    // On desktop: first mouse press locks the pointer instead of throwing
+    if (info.pointerType === "mouse" && !this.controls.isLocked) {
+      this.controls.lock();
+      return;
+    }
+
+    // Touch and already-locked mouse both just start charging
+    this.startCharging();
+  }
+
+  private handlePointerUp(info: PointerInfo) {
+    if (this.gameOver) return;
+
+    // For both touch and mouse, releasing throws (if we were charging)
+    this.throwBall();
   }
 
   // WIN / LOSE HANDLERS
@@ -314,6 +326,7 @@ export class Scene3_MilkToss {
       this.meterElement.style.bottom = "20px";
       this.meterElement.style.left = "50%";
       this.meterElement.style.transform = "translateX(-50%)";
+      this.meterElement.style.pointerEvents = "none";
       this.meterElement.style.width = "200px";
       this.meterElement.style.height = "20px";
       this.meterElement.style.border = "2px solid white";

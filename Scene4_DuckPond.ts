@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { getInputManager, PointerInfo } from "./InputManager.ts";
 import { inventory } from "./inventory.ts";
 
 export class Scene4_DuckPond {
@@ -84,20 +85,15 @@ export class Scene4_DuckPond {
     this.camera.position.set(0, 5, 5);
     this.camera.lookAt(0, 0.8, 0);
 
-    // Pointer lock controls (mouse look)
+    // Pointer lock controls (kept for compatibility, but not required on touch)
     this.controls = new PointerLockControls(
       this.camera,
       this.renderer.domElement,
     );
 
-    // First click: lock pointer. Later clicks: try to pick a duck.
-    this.renderer.domElement.addEventListener("click", () => {
-      if (!this.controls.isLocked) {
-        this.controls.lock();
-      } else {
-        this.onClick();
-      }
-    });
+    // Use global input: tap or click to try picking a duck
+    const input = getInputManager();
+    input.onPointerUp((info) => this.handlePointerTap(info));
 
     // Lights
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.7));
@@ -155,7 +151,7 @@ export class Scene4_DuckPond {
     this.spawnDucks();
 
     // Prize Duck (for big prize result, like Milk Toss)
-    this.loadModel("assets/models/duck.glb", (model) => {
+    this.loadModel("/assets/models/duck.glb", (model) => {
       model.visible = false;
       model.scale.setScalar(0.1);
       this.prizeDuck = model;
@@ -163,7 +159,7 @@ export class Scene4_DuckPond {
     });
 
     //load tent
-    this.loadModel("assets/models/duckTent.glb", (model) => {
+    this.loadModel("/assets/models/duckTent.glb", (model) => {
       model.position.copy(rim.position);
       model.rotation.x = Math.PI;
       model.scale.setScalar(5);
@@ -197,7 +193,7 @@ export class Scene4_DuckPond {
       for (let i = 0; i < count; i++) {
         const angle = (i / count) * Math.PI * 2;
 
-        this.loadModel("assets/models/duck.glb", (model) => {
+        this.loadModel("/assets/models/duck.glb", (model) => {
           model.traverse((child: THREE.Object3D) => {
             const mesh = child as THREE.Mesh;
             if (mesh.isMesh) {
@@ -218,9 +214,14 @@ export class Scene4_DuckPond {
             ringIndex: ring,
           };
 
+          const worldColliderRadius = 0.8;
+          const scale = 0.15;
+
+          model.scale.setScalar(scale);
+
           // Invisible collider sphere attached to duck
           const collider = new THREE.Mesh(
-            new THREE.SphereGeometry(1.2, 8, 8),
+            new THREE.SphereGeometry(worldColliderRadius / scale, 8, 8),
             new THREE.MeshBasicMaterial({ visible: false }),
           );
           collider.position.set(0, 0.4, 0);
@@ -240,7 +241,7 @@ export class Scene4_DuckPond {
     // Crosshair like Milk Toss
     if (!this.cursorElement) {
       this.cursorElement = document.createElement("img");
-      this.cursorElement.src = "assets/crosshair.png";
+      this.cursorElement.src = "/assets/crosshair.png";
       this.cursorElement.style.position = "absolute";
       this.cursorElement.style.top = "50%";
       this.cursorElement.style.left = "50%";
@@ -263,11 +264,11 @@ export class Scene4_DuckPond {
 
   // ------------- CLICK / PICKUP -------------
 
-  private onClick() {
-    if (this.showingOverlay || this.pickedDuck) return;
+  private handlePointerTap(info: PointerInfo) {
+    if (this.showingOverlay || this.pickedDuck || this.gameOver) return;
 
-    // Ray from center of screen
-    this.mouse.set(0, 0);
+    // Use tap/click position for raycast (supports touch AND mouse)
+    this.mouse.set(info.ndcX, info.ndcY);
     this.raycaster.setFromCamera(this.mouse, this.camera);
 
     const intersects = this.raycaster.intersectObjects(
@@ -287,6 +288,7 @@ export class Scene4_DuckPond {
       node = node.parent as THREE.Object3D | null;
     }
     if (!duck) return;
+
     this.duckCount++;
 
     const ringIndex = (duck.userData.ringIndex as number | undefined) ?? 1;
@@ -339,7 +341,7 @@ export class Scene4_DuckPond {
     this.controls.unlock();
 
     // Give player duck plush
-    inventory.addItem("duck-plush", "Duck Plush", 1); // <-- ADD THIS LINE
+    inventory.addItem("duck-plush", "Duck Plush", 1);
 
     // Position Duck in front of camera, above the text
     if (this.prizeDuck) {
