@@ -93,7 +93,7 @@ export class Scene1_MainHub {
     this.scene.add(this.player);
 
     this.loadGLBModel(
-      "/assets/models/Player.glb",
+      "assets/models/Player.glb",
       this.player,
       this.playerScale,
     );
@@ -121,7 +121,7 @@ export class Scene1_MainHub {
     this.scene.add(this.milkTossTent);
 
     this.loadGLBModel(
-      "/assets/models/milkTent.glb",
+      "assets/models/milkTent.glb",
       this.milkTossTent,
       this.tentScale,
     );
@@ -132,7 +132,7 @@ export class Scene1_MainHub {
     this.scene.add(this.duckPondTent);
 
     this.loadGLBModel(
-      "/assets/models/duckTent.glb",
+      "assets/models/duckTent.glb",
       this.duckPondTent,
       this.tentScale,
     );
