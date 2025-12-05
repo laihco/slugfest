@@ -8,24 +8,30 @@ import { GameScene } from "./SceneInterface.ts";
 import { inventory } from "./inventory.ts";
 
 // Grab UI elements
-const invList = document.getElementById("inventory-list")!;
 
-function updateInventoryUI() {
-  const items = inventory.getItems();
-  invList.innerHTML = "";
-
-  for (const item of items) {
-    const li = document.createElement("li");
-    li.textContent = `${item.name} x${item.quantity}`;
-    invList.appendChild(li);
+document.addEventListener("DOMContentLoaded", () => {
+  const invList = document.getElementById("inventory-list");
+  if (!invList) {
+    console.error("inventory-list element not found");
+    return;
   }
-}
 
-// Register UI update listener
-inventory.onChange(updateInventoryUI);
+  function updateInventoryUI() {
+    const items = inventory.getItems();
+    invList.innerHTML = "";
 
-// Optional: populate UI immediately on load
-updateInventoryUI();
+    for (const item of items) {
+      const li = document.createElement("li");
+      li.textContent = `${item.name} x${item.quantity}`;
+      invList.appendChild(li);
+    }
+  }
+
+  // Register UI update listener
+  inventory.onChange(updateInventoryUI);
+  // Optional: populate UI immediately on load
+  updateInventoryUI();
+});
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -161,6 +167,5 @@ function animate() {
   last = now;
 
   currentScene.update(delta);
-  
 }
 animate();
