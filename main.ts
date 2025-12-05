@@ -1,12 +1,16 @@
 import * as THREE from "https://esm.sh/three@0.172.0";
 
+import { setLang, t } from "./i18n.ts";
 import { initInputManager } from "./InputManager.ts";
+import { inventory } from "./inventory.ts";
 import { Scene1_MainHub } from "./Scene1_MainHub.ts";
 import { Scene2_Watergun } from "./Scene2_Watergun.ts";
 import { Scene3_MilkToss } from "./Scene3_MilkToss.ts";
 import { Scene4_DuckPond } from "./Scene4_DuckPond.ts";
 import { GameScene } from "./SceneInterface.ts";
-import { inventory } from "./inventory.ts";
+import { showInfoOverlay } from "./UIOverlay.ts";
+
+setLang("en"); // for now, everything is English
 
 // Grab UI elements
 
@@ -68,14 +72,7 @@ const scenes: Record<number, GameScene> = {
 
 let currentScene: GameScene = scenes[1];
 
-// Make sure all scenes start with their UI hidden
-Object.values(scenes).forEach((scene) => {
-  if (hasUI(scene) && scene.hideUI) {
-    scene.hideUI();
-  }
-});
-
-// Type guard for UI
+// ---------- Type guard ----------
 function hasUI(
   scene: unknown,
 ): scene is { showUI?: () => void; hideUI?: () => void } {
@@ -83,10 +80,62 @@ function hasUI(
     ("showUI" in scene || "hideUI" in scene);
 }
 
+// ---------- Scene intro tracking ----------
+const shownSceneIntro = new Set<number>();
+
+function showSceneIntro(id: number) {
+  if (shownSceneIntro.has(id)) return;
+  shownSceneIntro.add(id);
+
+  switch (id) {
+    case 1:
+      showInfoOverlay(
+        "intro-hub",
+        t("introHubTitle"),
+        t("introHubBody"),
+        t("introButton"),
+      );
+      break;
+    case 2:
+      showInfoOverlay(
+        "intro-watergun",
+        t("introWatergunTitle"),
+        t("introWatergunBody"),
+        t("introButton"),
+      );
+      break;
+    case 3:
+      showInfoOverlay(
+        "intro-milktoss",
+        t("introMilkTitle"),
+        t("introMilkBody"),
+        t("introButton"),
+      );
+      break;
+    case 4:
+      showInfoOverlay(
+        "intro-duckpond",
+        t("introDuckTitle"),
+        t("introDuckBody"),
+        t("introButton"),
+      );
+      break;
+  }
+}
+
+// Make sure all scenes start with their UI hidden
+Object.values(scenes).forEach((scene) => {
+  if (hasUI(scene) && scene.hideUI) {
+    scene.hideUI();
+  }
+});
+
+// Since we start in the hub, show its intro once
+showSceneIntro(1);
+
 export function switchScene(id: number) {
   // Always recreate Milk Toss so it starts fresh
   if (id === 3) {
-    // hide UI for old scene
     if (hasUI(currentScene) && currentScene.hideUI) {
       currentScene.hideUI();
     }
@@ -95,17 +144,17 @@ export function switchScene(id: number) {
     scenes[3] = freshMilkToss;
     currentScene = freshMilkToss;
 
-    // show UI for the new MilkToss instance
     if (hasUI(currentScene) && currentScene.showUI) {
       currentScene.showUI();
     }
+
+    showSceneIntro(3); // <- add this
 
     console.log("Switched to scene", id, "(fresh instance)");
     return;
   }
 
   if (id === 4) {
-    // hide UI for old scene
     if (hasUI(currentScene) && currentScene.hideUI) {
       currentScene.hideUI();
     }
@@ -114,10 +163,11 @@ export function switchScene(id: number) {
     scenes[4] = freshDuckPond;
     currentScene = freshDuckPond;
 
-    // show UI for the new MilkToss instance
     if (hasUI(currentScene) && currentScene.showUI) {
       currentScene.showUI();
     }
+
+    showSceneIntro(4); // <- add this
 
     console.log("Switched to scene", id, "(fresh instance)");
     return;
@@ -129,17 +179,17 @@ export function switchScene(id: number) {
     return;
   }
 
-  // hide UI for old scene
   if (hasUI(currentScene) && currentScene.hideUI) {
     currentScene.hideUI();
   }
 
   currentScene = next;
 
-  // show UI for new scene (if it has any)
   if (hasUI(currentScene) && currentScene.showUI) {
     currentScene.showUI();
   }
+
+  showSceneIntro(id); // <- add this
 
   console.log("Switched to scene", id);
 }
