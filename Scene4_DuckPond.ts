@@ -220,7 +220,7 @@ export class Scene4_DuckPond {
 
           // Invisible collider sphere attached to duck
           const collider = new THREE.Mesh(
-            new THREE.SphereGeometry(0.8, 8, 8),
+            new THREE.SphereGeometry(1.2, 8, 8),
             new THREE.MeshBasicMaterial({ visible: false }),
           );
           collider.position.set(0, 0.4, 0);
