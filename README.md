@@ -115,6 +115,14 @@ Matthew Kin
 
 - Added locked requirements to booths
 
+12/4/2025
+
+Melissa Rosales
+
+- Bug fixed git hub pages so that it loads and works correctly
+
+- Increased the hit box size of the ducks for the duck game
+
 ## F1 Requirements
 
 1. The platform we decided to use is TypeScript which does not already provide support for 3D rendering and physics simulation. TypeScript is our primary langauyge and framework for this project with calls to THREE.js for all of our 3D rendering.
