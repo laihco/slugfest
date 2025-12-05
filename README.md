@@ -181,6 +181,10 @@ Matthew Kin
 Ananya Setty
 - For F2, most of my work centered around building out the Water Gun qand Duck Pond minigames and planning ahead in case the water mechanics didn’t reach a stable state in time. Early on, I spent a lot of time experimenting with approaches for the water system—testing different particle methods, raycasting ideas, and ways of creating gameplay targets that felt readable and satisfying. Because Three.js doesn’t come with physics or fluid simulation, a lot of this required trial and error. Building Duck Pond meant setting up a simpler interaction system based on selecting ducks. Overall, this week helped me think more strategically about scope and fallback plans.
 
+Melissa Rosales (Orignally did this before the due date, but it got erased somehow)
+
+- For F2 we all continued to collaborate and contribute to the project. We realized that we wanted to have a backup level in case we had trouble with the other one. I spent my time creating a win lose condition and found i would be using repeated logic from another level. I then decided it would be best to create a style file in order to store this repeated logic, to make the code less messy and to reduce smells. Moreover I realized that using older code is okay and important, its there for a reason we made it, if it can be reused again use it, and make the changes as needed. 
+
 ## Introducing the team
 
 Either organizing by person or by role, tell us who will do what on your team. Your team should span at least the following four roles:
