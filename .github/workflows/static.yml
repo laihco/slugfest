@@ -28,7 +28,7 @@ jobs:
         run: deno bundle main.ts dist/bundle.js
 
       - name: Copy static files
-        run: |
+        run:
           mkdir -p dist
           cp index.html dist/index.html
           cp -r assets dist/assets || true
