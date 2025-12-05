@@ -103,7 +103,7 @@ export class Scene3_MilkToss {
     this.loadBottles(cube.position.clone());
 
     //load tent
-    this.loadModel("/assets/models/milkTent.glb", (model) => {
+    this.loadModel("assets/models/milkTent.glb", (model) => {
       model.position.copy(cube.position);
       model.rotation.x = Math.PI;
       model.scale.setScalar(4);
@@ -111,7 +111,7 @@ export class Scene3_MilkToss {
     });
 
     // Load prize fox model
-    this.loadModel("/assets/models/fox_toy.glb", (model) => {
+    this.loadModel("assets/models/fox_toy.glb", (model) => {
       model.visible = false; // hide until win
       model.scale.setScalar(0.6);
       this.prizeFox = model;
@@ -268,7 +268,7 @@ export class Scene3_MilkToss {
     ];
 
     pyramidOffsets.forEach((offset, index) => {
-      this.loadModel("/assets/models/bottle.glb", (model) => {
+      this.loadModel("assets/models/bottle.glb", (model) => {
         model.position.set(
           basePosition.x + offset[0],
           basePosition.y + offset[1],
@@ -297,7 +297,7 @@ export class Scene3_MilkToss {
   showUI() {
     if (!this.cursorElement) {
       this.cursorElement = document.createElement("img");
-      this.cursorElement.src = "/assets/crosshair.png";
+      this.cursorElement.src = "assets/crosshair.png";
       this.cursorElement.style.position = "absolute";
       this.cursorElement.style.top = "50%";
       this.cursorElement.style.left = "50%";

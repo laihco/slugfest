@@ -155,7 +155,7 @@ export class Scene4_DuckPond {
     this.spawnDucks();
 
     // Prize Duck (for big prize result, like Milk Toss)
-    this.loadModel("/assets/models/duck.glb", (model) => {
+    this.loadModel("assets/models/duck.glb", (model) => {
       model.visible = false;
       model.scale.setScalar(0.1);
       this.prizeDuck = model;
@@ -163,7 +163,7 @@ export class Scene4_DuckPond {
     });
 
     //load tent
-    this.loadModel("/assets/models/duckTent.glb", (model) => {
+    this.loadModel("assets/models/duckTent.glb", (model) => {
       model.position.copy(rim.position);
       model.rotation.x = Math.PI;
       model.scale.setScalar(5);
@@ -197,7 +197,7 @@ export class Scene4_DuckPond {
       for (let i = 0; i < count; i++) {
         const angle = (i / count) * Math.PI * 2;
 
-        this.loadModel("/assets/models/duck.glb", (model) => {
+        this.loadModel("assets/models/duck.glb", (model) => {
           model.traverse((child: THREE.Object3D) => {
             const mesh = child as THREE.Mesh;
             if (mesh.isMesh) {
@@ -240,7 +240,7 @@ export class Scene4_DuckPond {
     // Crosshair like Milk Toss
     if (!this.cursorElement) {
       this.cursorElement = document.createElement("img");
-      this.cursorElement.src = "/assets/crosshair.png";
+      this.cursorElement.src = "assets/crosshair.png";
       this.cursorElement.style.position = "absolute";
       this.cursorElement.style.top = "50%";
       this.cursorElement.style.left = "50%";
