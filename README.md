@@ -131,6 +131,12 @@ Matthew Kin
 
 - Added Lightmode Darkmode to Skybox so it displays Daytime during Lightmode and Dusk during Darkmode.
 
+Melissa Rosales
+
+- Added a save system that impliments a save state.
+
+- Has an autosave feature, delete save, manual save, and loads. 
+
 ## F1 Requirements
 
 1. The platform we decided to use is TypeScript which does not already provide support for 3D rendering and physics simulation. TypeScript is our primary langauyge and framework for this project with calls to THREE.js for all of our 3D rendering.
@@ -205,6 +211,10 @@ Melissa Rosales (Orignally did this before the due date, but it got erased someh
 [i18n + l10n] Support three different natural languages including English, a language with a logographic script (e.g. 中文), and a language with a right-to-left script (e.g. العربية).
 
 ## F3 Reflection
+
+Melissa Roasles
+
+F3 proved to be a big challenge since it was now time to make sure everything was working and in the right place. Orignally our Git pages had gotten messed out and wouldnt load our game properly, not being able to access files. I went in a spent a few hours editing and trying to figure out why that was the case. Through multiple different fixes such as changing the build file, the deno file, and the index file I made some edits to how the inventory was accessed adding a DOM and got it all to work. I also ending up adding the save state that allows the game to be saved across platforms. In F3 I realized that tackling problems earlier is a better idea then waiting till later, for it can save people the pain of trying to find where the problem exactly is. 
 
 ## Introducing the team
 
