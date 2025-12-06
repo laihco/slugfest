@@ -6,6 +6,7 @@ import { Scene3_MilkToss } from "./Scene3_MilkToss.ts";
 import { Scene4_DuckPond } from "./Scene4_DuckPond.ts";
 import { GameScene } from "./SceneInterface.ts";
 import { inventory } from "./inventory.ts";
+import { SaveManager, createSaveUI } from "./save_system.ts";
 
 // Grab UI elements
 
@@ -61,6 +62,20 @@ const scenes: Record<number, GameScene> = {
   3: createMilkTossScene(),
   4: createDuckPondScene(),
 };
+
+// attach a numeric id to each scene instance for save system lookup
+for (const idStr of Object.keys(scenes)) {
+  const id = Number(idStr);
+  (scenes[id] as any).__sceneId = id;
+}
+
+// --- Save manager integration (simple single-slot autosave) ---
+const saveManager = new SaveManager({ getCurrentScene: () => currentScene, switchScene: (id: number) => switchScene(id), autosaveIntervalMs: 15000 });
+
+// Add UI
+document.addEventListener("DOMContentLoaded", () => {
+  createSaveUI(saveManager);
+});
 
 let currentScene: GameScene = scenes[1];
 
@@ -138,6 +153,15 @@ export function switchScene(id: number) {
   }
 
   console.log("Switched to scene", id);
+}
+
+// Expose helper to get current scene and scenes by id for save system
+export function getCurrentScene(): GameScene {
+  return currentScene;
+}
+
+export function getSceneById(id: number): GameScene | undefined {
+  return scenes[id];
 }
 
 // Keyboard switching
