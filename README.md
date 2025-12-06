@@ -226,11 +226,15 @@ Melissa Rosales (Orignally did this before the due date, but it got erased someh
 
 Melissa Roasles
 
-F3 proved to be a big challenge since it was now time to make sure everything was working and in the right place. Orignally our Git pages had gotten messed out and wouldnt load our game properly, not being able to access files. I went in a spent a few hours editing and trying to figure out why that was the case. Through multiple different fixes such as changing the build file, the deno file, and the index file I made some edits to how the inventory was accessed adding a DOM and got it all to work. I also ending up adding the save state that allows the game to be saved across platforms. In F3 I realized that tackling problems earlier is a better idea then waiting till later, for it can save people the pain of trying to find where the problem exactly is. 
+F3 proved to be a big challenge since it was now time to make sure everything was working and in the right place. Orignally our Git pages had gotten messed out and wouldnt load our game properly, not being able to access files. I went in a spent a few hours editing and trying to figure out why that was the case. Through multiple different fixes such as changing the build file, the deno file, and the index file I made some edits to how the inventory was accessed adding a DOM and got it all to work. I also ending up adding the save state that allows the game to be saved across platforms. In F3 I realized that tackling problems earlier is a better idea then waiting till later, for it can save people the pain of trying to find where the problem exactly is.
 
 Ananya Setty
 
 For F3, my main focus was implementing the internationalization system and making sure our UI, dialogue, and game text could properly support English, a logographic language (Hindi), and a right-to-left language (Arabic). This ended up being a larger task than I originally expected and I wasn't able to complete the water gun game in time. Setting up the translation framework itself was straightforward, but integrating it into all of our existing scenes and making sure text updated correctly on scene transitions required some of refactoring.
+
+Matthew Kin
+
+What changed during our development was that we were going to add a third carnival game. However, due to time constraints and needing to finish the f3 requirements led to complications in our development timing making sure all conditions were met before so.
 
 ## Introducing the team
 
