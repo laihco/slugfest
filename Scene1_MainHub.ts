@@ -3,13 +3,12 @@ import * as THREE from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 import { inventory } from "./inventory.ts";
+import * as MAIN from "./main.ts";
 
 export class Scene1_MainHub {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
-
-  switchScene: (id: number) => void;
 
   player: THREE.Object3D;
   playerScale = 0.25;
@@ -32,6 +31,7 @@ export class Scene1_MainHub {
   cameraOffset = new THREE.Vector3(4, 6, 8);
   cameraLerpSpeed = 0.1;
 
+  //Scene Transition Cubes
   cubeSize = 2;
 
   scene3CubePosition = new THREE.Vector3(-10, 0.1, -8);
@@ -40,6 +40,7 @@ export class Scene1_MainHub {
   scene4CubePosition = new THREE.Vector3(7, 0.1, -8);
   cube4Mesh: THREE.Mesh;
 
+  //Carnival Tents
   milkTossTentPosition = new THREE.Vector3(-10, 1, -15);
   milkTossTent: THREE.Object3D;
 
@@ -50,16 +51,16 @@ export class Scene1_MainHub {
   tentScale = 3;
   tentRadius = 2.4;
 
-  constructor(
-    renderer: THREE.WebGLRenderer,
-    switchScene: (id: number) => void,
-  ) {
+  constructor(renderer: THREE.WebGLRenderer) {
     this.renderer = renderer;
-    this.switchScene = switchScene;
 
+    // Scene
     this.scene = new THREE.Scene();
+
+    // Sky gradient
     this.addSkyGradient();
 
+    // Unique camera for this scene
     this.camera = new THREE.PerspectiveCamera(
       60,
       innerWidth / innerHeight,
@@ -67,11 +68,13 @@ export class Scene1_MainHub {
       1000,
     );
 
+    // Lights
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.5));
     const dir = new THREE.DirectionalLight(0xffffff, 1);
     dir.position.set(5, 10, 7);
     this.scene.add(dir);
 
+    // Floor
     const floorGeometry = new THREE.BoxGeometry(
       this.floorWidth,
       this.floorHeight,
@@ -83,6 +86,7 @@ export class Scene1_MainHub {
     this.floorMesh.receiveShadow = true;
     this.scene.add(this.floorMesh);
 
+    // Player
     this.player = new THREE.Object3D();
     this.player.position.copy(this.playerStartPosition);
     this.player.rotation.y = this.playerStartRotationY;
@@ -95,13 +99,13 @@ export class Scene1_MainHub {
     );
     this.setupControls();
 
+    //Scene Cubes
     const cubeGeometry = new THREE.BoxGeometry(
       this.cubeSize,
       this.cubeSize,
       this.cubeSize,
     );
     const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x90EE90 });
-
     this.cube3Mesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
     this.cube3Mesh.position.copy(this.scene3CubePosition);
     this.scene.add(this.cube3Mesh);
@@ -110,10 +114,12 @@ export class Scene1_MainHub {
     this.cube4Mesh.position.copy(this.scene4CubePosition);
     this.scene.add(this.cube4Mesh);
 
+    //Game Tents
     this.milkTossTent = new THREE.Object3D();
     this.milkTossTent.position.copy(this.milkTossTentPosition);
     this.milkTossTent.rotation.x = this.tentRotationX;
     this.scene.add(this.milkTossTent);
+
     this.loadGLBModel(
       "assets/models/milkTent.glb",
       this.milkTossTent,
@@ -124,6 +130,7 @@ export class Scene1_MainHub {
     this.duckPondTent.position.copy(this.duckPondPosition);
     this.duckPondTent.rotation.x = this.tentRotationX;
     this.scene.add(this.duckPondTent);
+
     this.loadGLBModel(
       "assets/models/duckTent.glb",
       this.duckPondTent,
@@ -134,17 +141,25 @@ export class Scene1_MainHub {
   addSkyGradient() {
     const hour = new Date().getHours();
     const prefersDark =
-      globalThis.matchMedia("(prefers-color-scheme: dark)").matches;
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     let topColor: THREE.Color;
     let bottomColor: THREE.Color;
 
     if (!prefersDark) {
-      topColor = new THREE.Color(0x87cefa);
-      bottomColor = new THREE.Color(0xffffff);
+      // ---------------------------
+      // LIGHT MODE = DAY SKY
+      // ---------------------------
+      topColor = new THREE.Color(0x87cefa); // sky blue
+      bottomColor = new THREE.Color(0xffffff); // soft white horizon
     } else {
-      const t = Math.min(Math.max((hour - 12) / 6, 0), 1);
+      // ---------------------------
+      // DARK MODE = REAL AFTERNOON SKY
+      // ---------------------------
+      // Afternoon tint depends on the actual time (1pm–6pm)
+      const t = Math.min(Math.max((hour - 12) / 6, 0), 1); // 0–1 blend
 
+      // More orange when later in the afternoon
       topColor = new THREE.Color().setRGB(
         0.05 + 0.2 * t,
         0.1 + 0.1 * t,
@@ -165,21 +180,21 @@ export class Scene1_MainHub {
         bottomColor: { value: bottomColor },
       },
       vertexShader: `
-        varying vec3 vPosition;
-        void main() {
-          vPosition = position;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
+      varying vec3 vPosition;
+      void main() {
+        vPosition = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
       fragmentShader: `
-        uniform vec3 topColor;
-        uniform vec3 bottomColor;
-        varying vec3 vPosition;
-        void main() {
-          float h = normalize(vPosition).y * 0.5 + 0.5;
-          gl_FragColor = vec4(mix(bottomColor, topColor, h), 1.0);
-        }
-      `,
+      uniform vec3 topColor;
+      uniform vec3 bottomColor;
+      varying vec3 vPosition;
+      void main() {
+        float h = normalize(vPosition).y * 0.5 + 0.5;
+        gl_FragColor = vec4(mix(bottomColor, topColor, h), 1.0);
+      }
+    `,
       side: THREE.BackSide,
     });
 
@@ -189,12 +204,16 @@ export class Scene1_MainHub {
 
   loadGLBModel(path: string, object: THREE.Object3D, scale: number) {
     const loader = new GLTFLoader();
-    loader.load(path, (gltf: GLTF) => {
-      const model = gltf.scene;
-      model.position.set(0, 0, 0);
-      model.scale.set(scale, scale, scale);
-      object.add(model);
-    });
+    loader.load(
+      path,
+      (gltf: GLTF) => {
+        const model = gltf.scene;
+        model.position.set(0, 0, 0);
+        model.scale.set(scale, scale, scale);
+        object.add(model);
+      },
+      undefined,
+    );
   }
 
   setupControls() {
@@ -228,13 +247,24 @@ export class Scene1_MainHub {
 
     const floorTopY = this.floorY + this.floorHeight;
     const playerFeetY = this.player.position.y - this.playerHeight / 2;
-
     if (playerFeetY < floorTopY) {
       this.player.position.y = floorTopY + this.playerHeight / 2;
       this.velocityY = 0;
     }
+
+    const playerOffset = new THREE.Vector3(0, 0, 0);
+    playerOffset.subVectors(this.player.position, this.milkTossTent.position);
+    playerOffset.y = 0;
+    if (playerOffset.length() < this.tentRadius * this.tentScale) {
+      playerOffset.setLength(this.tentRadius * this.tentScale);
+      this.player.position.x = this.milkTossTent.position.x + playerOffset.x;
+      this.player.position.z = this.milkTossTent.position.z + playerOffset.z;
+    }
   }
 
+  // --------------------------
+  // Transition Collisions
+  //---------------------------
   detectTransitionCollisions() {
     if (
       Math.abs(this.player.position.x - this.cube3Mesh.position.x) <
@@ -242,7 +272,7 @@ export class Scene1_MainHub {
       Math.abs(this.player.position.z - this.cube3Mesh.position.z) <
         this.cubeSize / 2
     ) {
-      this.switchScene(3);
+      MAIN.switchScene(3);
     }
 
     if (
@@ -251,9 +281,11 @@ export class Scene1_MainHub {
       Math.abs(this.player.position.z - this.cube4Mesh.position.z) <
         this.cubeSize / 2
     ) {
+      // REQUIRE 1 FOX PLUSH TO ENTER DUCK POND
       if (inventory.hasItem("fox-plush", 1)) {
-        this.switchScene(4);
+        MAIN.switchScene(4);
       } else {
+        // Show popup
         let overlay = document.getElementById("popup-overlay");
         let box = document.getElementById("popup-box");
 
@@ -279,6 +311,7 @@ export class Scene1_MainHub {
     }
   }
 
+  // -------------------------
   update(delta: number) {
     this.updateMovement(delta);
     this.detectTransitionCollisions();
@@ -290,7 +323,9 @@ export class Scene1_MainHub {
     this.renderer.render(this.scene, this.camera);
   }
 
+  //Reset Player spawn
   resetPlayerPosition() {
+    // Spawn near the center of the floor.
     this.player.position.set(0, 3, 0);
     this.velocityY = 0;
   }
