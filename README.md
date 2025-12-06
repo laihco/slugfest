@@ -141,7 +141,13 @@ Melissa Rosales
 
 - Added a save system that impliments a save state.
 
-- Has an autosave feature, delete save, manual save, and loads. 
+- Has an autosave feature, delete save, manual save, and loads.
+
+Ananya Setty
+
+- Added multiple language support
+
+- Worked on Touchscreen features as well - needs a bit more testing on second device
 
 ## F1 Requirements
 
