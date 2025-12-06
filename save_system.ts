@@ -1,6 +1,17 @@
 import { inventory, InventoryItem } from "./inventory.ts";
 
-type SceneWithPlayer = { __sceneId?: number; player?: { position?: { x:number;y:number;z:number; set?: (x:number,y:number,z:number)=>void }; rotation?: { y?: number } } };
+type SceneWithPlayer = {
+  __sceneId?: number;
+  player?: {
+    position?: {
+      x: number;
+      y: number;
+      z: number;
+      set?: (x: number, y: number, z: number) => void;
+    };
+    rotation?: { y?: number };
+  };
+};
 
 export interface SavedGame {
   sceneId: number;
@@ -22,16 +33,35 @@ export class SaveManager {
   private getCurrentSceneFn: () => unknown = () => ({} as unknown);
   private switchSceneFn: (id: number) => void = () => {};
 
-  constructor(opts?: { getCurrentScene?: () => unknown; switchScene?: (id: number) => void; autosaveIntervalMs?: number }) {
+  constructor(
+    opts?: {
+      getCurrentScene?: () => unknown;
+      switchScene?: (id: number) => void;
+      autosaveIntervalMs?: number;
+    },
+  ) {
     if (opts?.getCurrentScene) this.getCurrentSceneFn = opts.getCurrentScene;
     if (opts?.switchScene) this.switchSceneFn = opts.switchScene;
-    if (opts?.autosaveIntervalMs) this.autosaveInterval = opts.autosaveIntervalMs;
+    if (opts?.autosaveIntervalMs) {
+      this.autosaveInterval = opts.autosaveIntervalMs;
+    }
     this.startAutosave();
   }
 
   save(name?: string) {
     const current = this.getCurrentSceneFn();
-    type SceneWithPlayer = { __sceneId?: number; player?: { position?: { x:number;y:number;z:number; set?: (x:number,y:number,z:number)=>void }; rotation?: { y?: number } } };
+    type SceneWithPlayer = {
+      __sceneId?: number;
+      player?: {
+        position?: {
+          x: number;
+          y: number;
+          z: number;
+          set?: (x: number, y: number, z: number) => void;
+        };
+        rotation?: { y?: number };
+      };
+    };
     const sceneTyped = current as SceneWithPlayer;
     const sceneId = sceneTyped.__sceneId ?? 1;
 
@@ -66,7 +96,9 @@ export class SaveManager {
     for (const it of currentItems) {
       while (inventory.hasItem(it.id, 1)) inventory.removeItem(it.id, 1);
     }
-    for (const it of payload.inventory) inventory.addItem(it.id, it.name, it.quantity);
+    for (const it of payload.inventory) {
+      inventory.addItem(it.id, it.name, it.quantity);
+    }
 
     // Switch scene if needed
     const currentAfter = this.getCurrentSceneFn() as SceneWithPlayer;
@@ -76,10 +108,15 @@ export class SaveManager {
 
     // Apply hub position if present and we're in hub
     const scene = this.getCurrentSceneFn() as SceneWithPlayer;
-    if (payload.playerPosition && scene.player && scene.player.position && scene.player.position.set) {
+    if (
+      payload.playerPosition && scene.player && scene.player.position &&
+      scene.player.position.set
+    ) {
       const p = payload.playerPosition;
       scene.player.position.set(p.x, p.y, p.z);
-      if (typeof payload.playerRotationY === "number" && scene.player.rotation) scene.player.rotation.y = payload.playerRotationY;
+      if (
+        typeof payload.playerRotationY === "number" && scene.player.rotation
+      ) scene.player.rotation.y = payload.playerRotationY;
     }
 
     return payload;
@@ -91,17 +128,24 @@ export class SaveManager {
 
   setAutosave(enabled: boolean) {
     this.autosaveEnabled = enabled;
-    if (enabled) this.startAutosave(); else this.stopAutosave();
+    if (enabled) this.startAutosave();
+    else this.stopAutosave();
   }
 
   private startAutosave() {
     if (!this.autosaveEnabled) return;
     if (this.autosaveTimerId) globalThis.clearInterval(this.autosaveTimerId);
-    this.autosaveTimerId = globalThis.setInterval(() => this.performAutosave(), this.autosaveInterval) as unknown as number;
+    this.autosaveTimerId = globalThis.setInterval(
+      () => this.performAutosave(),
+      this.autosaveInterval,
+    ) as unknown as number;
   }
 
   private stopAutosave() {
-    if (this.autosaveTimerId) { globalThis.clearInterval(this.autosaveTimerId); this.autosaveTimerId = null; }
+    if (this.autosaveTimerId) {
+      globalThis.clearInterval(this.autosaveTimerId);
+      this.autosaveTimerId = null;
+    }
   }
 
   private performAutosave() {
@@ -182,7 +226,10 @@ export function createSaveUI(manager: SaveManager) {
   const delBtn = document.createElement("button");
   delBtn.textContent = "Delete";
   delBtn.onclick = () => {
-    if (confirm("Delete save?")) { manager.delete(); alert("Deleted."); }
+    if (confirm("Delete save?")) {
+      manager.delete();
+      alert("Deleted.");
+    }
   };
   row.appendChild(delBtn);
 

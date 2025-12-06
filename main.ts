@@ -6,7 +6,7 @@ import { Scene3_MilkToss } from "./Scene3_MilkToss.ts";
 import { Scene4_DuckPond } from "./Scene4_DuckPond.ts";
 import { GameScene } from "./SceneInterface.ts";
 import { inventory } from "./inventory.ts";
-import { SaveManager, createSaveUI } from "./save_system.ts";
+import { createSaveUI, SaveManager } from "./save_system.ts";
 
 // Grab UI elements
 
@@ -70,7 +70,11 @@ for (const idStr of Object.keys(scenes)) {
 }
 
 // --- Save manager integration (simple single-slot autosave) ---
-const saveManager = new SaveManager({ getCurrentScene: () => currentScene, switchScene: (id: number) => switchScene(id), autosaveIntervalMs: 15000 });
+const saveManager = new SaveManager({
+  getCurrentScene: () => currentScene,
+  switchScene: (id: number) => switchScene(id),
+  autosaveIntervalMs: 15000,
+});
 
 // Add UI
 document.addEventListener("DOMContentLoaded", () => {
