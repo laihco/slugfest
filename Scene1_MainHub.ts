@@ -141,7 +141,7 @@ export class Scene1_MainHub {
   addSkyGradient() {
     const hour = new Date().getHours();
     const prefersDark =
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
+      globalThis.matchMedia("(prefers-color-scheme: dark)").matches;
 
     let topColor: THREE.Color;
     let bottomColor: THREE.Color;
