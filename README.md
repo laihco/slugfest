@@ -123,6 +123,20 @@ Melissa Rosales
 
 - Increased the hit box size of the ducks for the duck game
 
+12/5/2025
+
+Matthew Kin
+
+- Added Lightmode Darkmode to UI
+
+- Added Lightmode Darkmode to Skybox so it displays Daytime during Lightmode and Dusk during Darkmode.
+
+Melissa Rosales
+
+- Added a save system that impliments a save state.
+
+- Has an autosave feature, delete save, manual save, and loads. 
+
 ## F1 Requirements
 
 1. The platform we decided to use is TypeScript which does not already provide support for 3D rendering and physics simulation. TypeScript is our primary langauyge and framework for this project with calls to THREE.js for all of our 3D rendering.
@@ -179,11 +193,28 @@ Matthew Kin
 - Looking back on how we met the F2 requirements, our team’s plan has changed noticeably since our F1 devlog. One of the biggest realizations was how much more planning the inventory system needed than we originally expected. In F1, we assumed inventory would be a simple add-on, but once we started integrating multiple minigames and scene transitions, it became clear that the inventory had to persist across scenes, sync properly with game logic, and update immediately when the player won prizes. Setting this up required rethinking how our data was stored, how scenes communicated with each other, and how to keep everything consistent without breaking existing features.
 
 Ananya Setty
+
 - For F2, most of my work centered around building out the Water Gun qand Duck Pond minigames and planning ahead in case the water mechanics didn’t reach a stable state in time. Early on, I spent a lot of time experimenting with approaches for the water system—testing different particle methods, raycasting ideas, and ways of creating gameplay targets that felt readable and satisfying. Because Three.js doesn’t come with physics or fluid simulation, a lot of this required trial and error. Building Duck Pond meant setting up a simpler interaction system based on selecting ducks. Overall, this week helped me think more strategically about scope and fallback plans.
 
 Melissa Rosales (Orignally did this before the due date, but it got erased somehow)
 
-- For F2 we all continued to collaborate and contribute to the project. We realized that we wanted to have a backup level in case we had trouble with the other one. I spent my time creating a win lose condition and found i would be using repeated logic from another level. I then decided it would be best to create a style file in order to store this repeated logic, to make the code less messy and to reduce smells. Moreover I realized that using older code is okay and important, its there for a reason we made it, if it can be reused again use it, and make the changes as needed. 
+- For F2 we all continued to collaborate and contribute to the project. We realized that we wanted to have a backup level in case we had trouble with the other one. I spent my time creating a win lose condition and found i would be using repeated logic from another level. I then decided it would be best to create a style file in order to store this repeated logic, to make the code less messy and to reduce smells. Moreover I realized that using older code is okay and important, its there for a reason we made it, if it can be reused again use it, and make the changes as needed.
+
+## F3 Requirements
+
+[continuous inventory] The game must involve one inventory item for which the continuous quantity matters in an interesting way (e.g. a bucket holds some continuously variable number of liters of water, but the bucket can't put out the fire unless it has enough water).
+
+[save system] Support multiple save points as well as an auto-save feature so that the player cannot lose progress by accidentally closing the game app.
+
+[visual themes] Support light and dark modes visual styles that respond to the user's preferences set in the host environment (e.g. operating system or browser, not in-game settings), and these visual styles are integrated deeply into the game's display (e.g. day/night lighting of the fictional rooms, not just changing the border color of the game window)
+
+[i18n + l10n] Support three different natural languages including English, a language with a logographic script (e.g. 中文), and a language with a right-to-left script (e.g. العربية).
+
+## F3 Reflection
+
+Melissa Roasles
+
+F3 proved to be a big challenge since it was now time to make sure everything was working and in the right place. Orignally our Git pages had gotten messed out and wouldnt load our game properly, not being able to access files. I went in a spent a few hours editing and trying to figure out why that was the case. Through multiple different fixes such as changing the build file, the deno file, and the index file I made some edits to how the inventory was accessed adding a DOM and got it all to work. I also ending up adding the save state that allows the game to be saved across platforms. In F3 I realized that tackling problems earlier is a better idea then waiting till later, for it can save people the pain of trying to find where the problem exactly is. 
 
 ## Introducing the team
 

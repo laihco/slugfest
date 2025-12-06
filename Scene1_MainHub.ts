@@ -139,26 +139,65 @@ export class Scene1_MainHub {
   }
 
   addSkyGradient() {
+    const hour = new Date().getHours();
+    const prefersDark =
+      globalThis.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    let topColor: THREE.Color;
+    let bottomColor: THREE.Color;
+
+    if (!prefersDark) {
+      // ---------------------------
+      // LIGHT MODE = DAY SKY
+      // ---------------------------
+      topColor = new THREE.Color(0x87cefa); // sky blue
+      bottomColor = new THREE.Color(0xffffff); // soft white horizon
+    } else {
+      // ---------------------------
+      // DARK MODE = REAL AFTERNOON SKY
+      // ---------------------------
+      // Afternoon tint depends on the actual time (1pm–6pm)
+      const t = Math.min(Math.max((hour - 12) / 6, 0), 1); // 0–1 blend
+
+      // More orange when later in the afternoon
+      topColor = new THREE.Color().setRGB(
+        0.05 + 0.2 * t,
+        0.1 + 0.1 * t,
+        0.3 + 0.2 * t,
+      );
+
+      bottomColor = new THREE.Color().setRGB(
+        1.0,
+        0.6 - 0.2 * t,
+        0.3 + 0.1 * t,
+      );
+    }
+
     const skyGeo = new THREE.SphereGeometry(500, 32, 15);
     const skyMat = new THREE.ShaderMaterial({
+      uniforms: {
+        topColor: { value: topColor },
+        bottomColor: { value: bottomColor },
+      },
       vertexShader: `
-        varying vec3 vPosition;
-        void main() {
-          vPosition = position;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
+      varying vec3 vPosition;
+      void main() {
+        vPosition = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
       fragmentShader: `
-        varying vec3 vPosition;
-        void main() {
-          float h = normalize(vPosition).y * 0.5 + 0.5;
-          vec3 topColor = vec3(0.05, 0.15, 0.5); 
-          vec3 bottomColor = vec3(1.0, 0.7, 0.4); 
-          gl_FragColor = vec4(mix(bottomColor, topColor, h), 1.0);
-        }
-      `,
+      uniform vec3 topColor;
+      uniform vec3 bottomColor;
+      varying vec3 vPosition;
+      void main() {
+        float h = normalize(vPosition).y * 0.5 + 0.5;
+        gl_FragColor = vec4(mix(bottomColor, topColor, h), 1.0);
+      }
+    `,
       side: THREE.BackSide,
     });
+
     const skyMesh = new THREE.Mesh(skyGeo, skyMat);
     this.scene.add(skyMesh);
   }
