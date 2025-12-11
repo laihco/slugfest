@@ -1,13 +1,57 @@
-/* --- BASE INVENTORY UI --- */
+/* ----------------- RESULT OVERLAY ----------------- */
+.result-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+}
+
+.container {
+  perspective: 800px;
+  transform-style: preserve-3d;
+}
+
+.winText {
+  font-family: "Impact", "Arial Black", system-ui;
+  font-size: 80px;
+  padding: 16px 40px;
+  color: #ffdd00;
+  letter-spacing: 6px;
+  text-shadow: 0 0 8px #000, 4px 4px 0 #a00000, -2px -2px 0 #a00000;
+  border-radius: 10px;
+  border: 4px solid #a00000;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
+  transform-origin: center;
+  animation: result-pop-forward 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.loseText {
+  font-family: "Impact", "Arial Black", system-ui;
+  font-size: 80px;
+  padding: 16px 40px;
+  color: #ff5555;
+  letter-spacing: 6px;
+  text-shadow: 0 0 8px #000, 4px 4px 0 #5a0000, -2px -2px 0 #5a0000;
+  border-radius: 10px;
+  border: 4px solid #5a0000;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
+  transform-origin: center;
+  animation: result-pop-forward 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ----------------- BASE INVENTORY UI ----------------- */
+
 #inventory-ui {
   position: absolute;
   top: 20px;
   right: 20px;
-  z-index: 1000;
   font-family: Arial, sans-serif;
 }
 
-/* Default (light mode) */
+/* Default light-mode UI */
 #inventory-box {
   background-color: #faf5e0; /* light parchment */
   border: 2px solid #4d2a00; /* brown border */
@@ -24,34 +68,13 @@
   padding-left: 20px;
 }
 
-.dialogText {
-  font-family: "Impact", "Arial Black", system-ui;
-  font-size: 20px;
-  text-transform: none;
-  letter-spacing: 1px;
-  text-align: center;
-  color: #ffcc33;
-}
-
-.dialogButton {
-  font-family: inherit;
-  background: #ffcc33;
-  color: #331100;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-
-.dialogButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
-
-/* --- DARK MODE VERSION --- */
+/* ----------------- DARK MODE ----------------- */
 @media (prefers-color-scheme: dark) {
   #inventory-box {
     background-color: #2a2a2a; /* dark charcoal */
-    border: 2px solid #888; /* soft silver border */
+    border: 2px solid #888; /* soft silver */
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    color: #f0f0f0; /* light text */
+    color: #f0f0f0;
   }
 
   #inventory-list {
